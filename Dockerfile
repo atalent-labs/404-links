@@ -9,9 +9,11 @@ LABEL url="https://restqa.io/404-links"
 
 RUN apk --no-cache add python make g++
 
-RUN cat package.json
 
 COPY package*.json ./
+
+RUN cat package.json
+
 RUN npm install --production
 RUN npm ci --only=production
 
