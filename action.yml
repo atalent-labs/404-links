@@ -1,0 +1,16 @@
+name: '404 Links'
+author: 'Olivier Rodomond - RestQa'
+branding:
+  icon: 'anchor'
+  color: 'blue'
+description: 'It is a part of quality assurance to check that your markdown files doesn\'t contains broken links'
+inputs:
+  workdir:
+    description: 'Use workdir where you would like to check the dead links'
+    required: false
+#outputs:
+#  tag:
+#    description: 'Is the tag, which was pushed'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'

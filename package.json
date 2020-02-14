@@ -4,6 +4,7 @@
   "description": "A simple link checker, no more broken link in your project documentation",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "npm test"
   },
   "author": "",

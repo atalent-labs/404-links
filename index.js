@@ -1,5 +1,4 @@
 
-
 ((path) =>  {
   const EventEmitter = require('events')
   const find = require('find')
@@ -9,9 +8,7 @@
   global.$ = {
     event: new EventEmitter(),
     config: {
-      ignore: [
-        'https://www.udemy.com/understand-nodejs'
-      ]
+      ignore: []
     },
     count: 0,
     i: 0
@@ -32,6 +29,6 @@
     
     process.exit(result.length ? 1 : 0)
   })
-})(process.argv[2])
+})(process.argv[2] || '.')
 
 
