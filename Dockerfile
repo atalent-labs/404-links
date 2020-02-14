@@ -9,29 +9,17 @@ LABEL url="https://restqa.io/404-links"
 
 RUN apk --no-cache add python make g++
 
-
 COPY package*.json ./
-
-RUN cat package.json
 
 RUN npm install --production
 RUN npm ci --only=production
 
-RUN ls
-
-
-
 # The instructions for second stage
 FROM node:10-alpine
 
-WORKDIR /usr/src/app
-COPY --from=builder node_modules node_modules
-
 ENV NODE_ENV=production
 
-COPY . .
+COPY . /restqa
+COPY --from=builder node_modules /restqa/node_modules
 
-#CMD [ "npm", "start" ]
-CMD [ "ls"]
-
-
+CMD [ "/restqa/404-links", "."]
