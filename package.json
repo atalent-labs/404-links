@@ -1,17 +1,26 @@
 {
-  "name": "404-links",
+  "name": "@restqa/404-links",
   "version": "1.0.0",
   "description": "A simple link checker, no more broken link in your project documentation",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "npm test"
+    "start": "./404-links",
+    "start:dev": "nodemon -x ./404-links",
+    "server": "nodemon -x ./404-links",
+    "server:dev": "nodemon server.js",
+    "lint:fix": "standard --fix",
+    "lint": "standard",
+    "test": "jest",
+    "test:watch": "jest --watch --coverage",
+    "test:coverage": "jest --coverage"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "olivier rodomond",
+  "license": "MIT",
   "devDependencies": {
     "dotenv": "^8.2.0",
-    "nodemon": "^2.0.2"
+    "jest": "^25.1.0",
+    "nodemon": "^2.0.2",
+    "standard": "^14.3.1"
   },
   "dependencies": {
     "async": "^3.1.1",
@@ -19,5 +28,19 @@
     "find": "^0.3.0",
     "request": "^2.88.2",
     "uuid": "^3.4.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/restqa/404-links.git"
+  },
+  "keywords": [
+    "qa",
+    "spellcheck",
+    "automation",
+    "opensource"
+  ],
+  "bugs": {
+    "url": "https://github.com/restqa/404-links/issues"
+  },
+  "homepage": "https://github.com/restqa/404-links#readme"
 }
