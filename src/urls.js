@@ -13,7 +13,7 @@ function Url(config) {
     }
     request.get(item.url, (err, response) => {
       config.i++
-      let statusCode = response.statusCode
+      let statusCode = (err && err.code) || response.statusCode 
       console.log('('+config.i+'/'+config.count+') ['+statusCode+'] ' + item.url)
       let result
       if ('2' !== statusCode.toString()[0]) {
