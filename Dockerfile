@@ -31,6 +31,7 @@ ENV NODE_ENV=production
 
 COPY . .
 
-CMD [ "npm", "start" ]
+#CMD [ "npm", "start" ]
+CMD [ "ls"]
 
 
