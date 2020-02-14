@@ -1,0 +1,5 @@
+.git
+.github
+coverage
+node_modules
+kubernetes-definition.yml
