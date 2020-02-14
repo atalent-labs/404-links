@@ -1,0 +1,20 @@
+{
+  "name": "404-links",
+  "version": "1.0.0",
+  "description": "A simple link checker, no more broken link in your project documentation",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.2"
+  },
+  "dependencies": {
+    "async": "^3.1.1",
+    "find": "^0.3.0",
+    "request": "^2.88.2"
+  }
+}
