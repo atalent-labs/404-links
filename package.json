@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "async": "^3.1.1",
+    "express": "^4.17.1",
     "find": "^0.3.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "uuid": "^3.4.0"
   }
 }
