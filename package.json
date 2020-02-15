@@ -42,5 +42,13 @@
   "bugs": {
     "url": "https://github.com/restqa/404-links/issues"
   },
-  "homepage": "https://github.com/restqa/404-links#readme"
+  "homepage": "https://github.com/restqa/404-links#readme",
+  "standard": {
+    "globals": [
+      "$"
+    ],
+    "env": [
+      "jest"
+    ]
+  }
 }

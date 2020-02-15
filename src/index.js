@@ -10,11 +10,11 @@ function main (config) {
   config.event = new EventEmitter()
   config.ignore = config.ignore || []
 
-  if (false === Array.isArray(config.ignore)) {
+  if (Array.isArray(config.ignore) === false) {
     throw new Error('The option value "ignore" should be an array')
   }
-  
-  if (false === fs.existsSync(config.folder)) {
+
+  if (fs.existsSync(config.folder) === false) {
     throw new Error('The folder "./rerere" doesn\'t exist')
   }
 
