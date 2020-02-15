@@ -8,7 +8,8 @@ const fs = require('fs')
 
 const options = {
   folder: process.argv[2] || '.',
-  ignore: []
+  ignore: [],
+  port: process.env.PORT || 8080
 }
 
 express()
@@ -34,6 +35,6 @@ express()
       fs.rmdirSync(config.folder, { recursive: true })
     })
   })
-  .listen(8080, () => {
-    console.log('started')
+  .listen(config.port, () => {
+    console.log('serving api on port', config.port)
   })
