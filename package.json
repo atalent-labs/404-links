@@ -6,7 +6,7 @@
   "scripts": {
     "start": "./404-links",
     "start:dev": "nodemon -x ./404-links",
-    "server": "nodemon -x ./404-links",
+    "server": "node server.js",
     "server:dev": "nodemon server.js",
     "lint:fix": "standard --fix",
     "lint": "standard",

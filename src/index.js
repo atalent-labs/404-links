@@ -2,12 +2,21 @@ const EventEmitter = require('events')
 const find = require('find')
 const File = require('./files')
 const Url = require('./urls')
+const fs = require('fs')
 
 function main (config) {
   config.count = 0
   config.i = 0
   config.event = new EventEmitter()
   config.ignore = config.ignore || []
+
+  if (false === Array.isArray(config.ignore)) {
+    throw new Error('The option value "ignore" should be an array')
+  }
+  
+  if (false === fs.existsSync(config.folder)) {
+    throw new Error('The folder "./rerere" doesn\'t exist')
+  }
 
   const file = new File(config)
   const url = new Url(config)
