@@ -25,4 +25,4 @@ RUN ln -s /restqa/404-links /bin/404-links
 
 WORKDIR /restqa
 
-CMD [ "404-links"]
+ENTRYPOINT [ "404-links"]
