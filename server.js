@@ -35,6 +35,6 @@ express()
       fs.rmdirSync(config.folder, { recursive: true })
     })
   })
-  .listen(config.port, () => {
-    console.log('serving api on port', config.port)
+  .listen(options.port, () => {
+    console.log('serving api on port', options.port)
   })
