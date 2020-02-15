@@ -90,7 +90,7 @@ stages:
 404-links:
   stage: validator
   image:
-    name: 'restqa/404-links'
+    name: 'restqa/404-links:1.0.0'
   script:
     - '404-links .'
 #   - '404-links ./docs "https://google.com"' # if you want to add arguments
