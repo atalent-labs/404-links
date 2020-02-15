@@ -7,11 +7,21 @@
 - [About the Project](#about)
 - [Github Action](#github-action)
 - [Gitlab CI](#gitlab-ci)
-- [API](##api-http-server-version)
+- [API](#api-http-server-version)
 
 ## About
 
+A part of a good developer experience is to ensure that the documentation is accurate.
+Since our repositories depends on different website to get additional detail the 404-links command will support you the validate all the links includes in your documentation.
 
+**The developer experience (DX) is definetly a part of the Product Quality assurance**
+
+You can run the command from different way:
+- node
+- docker
+- Rest API
+- github actions
+- gitlab CI
 
 ### Customer variable
 
@@ -126,6 +136,7 @@ curl --request POST \
   }'
 ```
 
-
+The response body will just share an array of broken links.
+If there is no broken links the array will be empty.
 
 
