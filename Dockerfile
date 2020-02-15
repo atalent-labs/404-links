@@ -23,4 +23,6 @@ COPY . /restqa
 COPY --from=builder node_modules /restqa/node_modules
 RUN ln -s /restqa/404-links /bin/404-links
 
-CMD [ "404-links", "."]
+WORKDIR /restqa
+
+CMD [ "404-links"]

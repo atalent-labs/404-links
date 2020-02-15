@@ -4,7 +4,7 @@ const _404 = require('./src')
 
 let config = {
   folder : process.argv[2] || '.' ,
-  ignore: [],
+  ignore: String(process.argv[3]).split(','),
 }
 let links = _404(config)
 
