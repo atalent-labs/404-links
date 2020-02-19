@@ -139,4 +139,6 @@ curl --request POST \
 The response body will just share an array of broken links.
 If there is no broken links the array will be empty.
 
+## License
 
+[MIT License](./LICENSE)
