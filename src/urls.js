@@ -7,13 +7,13 @@ function Url (config) {
   const q = $async.queue(function (item, callback) {
     if (config.ignore.includes(item.url)) {
       config.i++
-      console.log('(' + config.i + '/' + config.count + ') [IGNORED] ' + item.url)
+      config.log('(' + config.i + '/' + config.count + ') [IGNORED] ' + item.url)
       return callback()
     }
     request.get(item.url, (err, response) => {
       config.i++
       const statusCode = (err && err.code) || response.statusCode
-      console.log('(' + config.i + '/' + config.count + ') [' + statusCode + '] ' + item.url)
+      config.log('(' + config.i + '/' + config.count + ') [' + statusCode + '] ' + item.url)
       let result
       if (statusCode.toString()[0] !== '2') {
         result = Object.assign({
@@ -28,13 +28,13 @@ function Url (config) {
   // assign a callback
   q.drain(function () {
     config.event.emit('end', result)
-    console.log('all items have been processed')
+    config.log('all items have been processed')
   })
 
   // assign an error callback
-  q.error(function (err, task) {
+  q.error(function (err) {
     result.push(err)
-    console.log(result.length, 'error(s)')
+    config.log(result.length, 'error(s)')
   })
 
   function check (item) {
