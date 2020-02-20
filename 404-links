@@ -5,6 +5,7 @@ const _404 = require('./src')
 let config = {
   folder : process.argv[2] || '.' ,
   ignore: String(process.argv[3]).split(','),
+  log: console.log
 }
 let links = _404(config)
 
@@ -12,10 +13,10 @@ links.on('end', (result) => {
   console.log('=====================================================')
   if (result.length) {
     result.forEach(err => {
-      console.log(err.message)
+      config.log(err.message)
     })
   } else {
-    console.log('All links are OK')
+    config.log('All links are OK')
   }
   
   process.exit(result.length ? 1 : 0)
