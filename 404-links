@@ -7,6 +7,10 @@ let config = {
   ignore: String(process.argv[3]).split(','),
   log: console.log
 }
+
+config.ignore.push('https://')
+config.ignore.push('http://')
+
 let links = _404(config)
 
 links.on('end', (result) => {
