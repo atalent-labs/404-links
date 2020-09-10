@@ -54,7 +54,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: 'restqa-404-links'
-      uses: restqa/404-links@1.0.0
+      uses: restqa/404-links@v1.0.1
 ```
 
 or if you want to pass arguments
@@ -70,7 +70,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: 'restqa-404-links'
-      uses: restqa/404-links@1.0.0
+      uses: restqa/404-links@v1.0.1
       with:
         path: 'docs'
         ignore: 'http://google.com'
@@ -90,7 +90,7 @@ stages:
 404-links:
   stage: validator
   image:
-    name: 'restqa/404-links:1.0.0'
+    name: 'restqa/404-links:v1.0.1'
   script:
     - '404-links .'
 #   - '404-links ./docs "https://google.com"' # if you want to add arguments
