@@ -1,34 +1,27 @@
-const EventEmitter = require('events')
-const find = require('find')
-const File = require('./files')
-const Url = require('./urls')
-const fs = require('fs')
-
-function main (config) {
-  config.count = 0
-  config.i = 0
-  config.event = new EventEmitter()
-  config.ignore = config.ignore || []
-
-  if (Array.isArray(config.ignore) === false) {
-    throw new Error('The option value "ignore" should be an array')
-  }
-
-  if (fs.existsSync(config.folder) === false) {
-    throw new Error('The folder "./rerere" doesn\'t exist')
-  }
-
-  const file = new File(config)
-  const url = new Url(config)
-
-  find.file(/\.md$/, config.folder, function (files) {
-    files.forEach(_ => config.event.emit('/file/', _))
-  })
-
-  config.event.on('/file/', file.search)
-  config.event.on('/url/', url.check)
-
-  return config.event
+/**
+ * Instanciate 404-links
+ *
+ * @param {Object} options
+ * @param {Stream.Writable} options.stream - 
+ * @param {string} (optional) options.folder - Define the folder where to initiate restqa
+ * @param {array<string>} (optional) options.ignore - Continuous integration tool that required to be setup
+ * @return {object}
+ *
+ * @example
+ *
+ * const NotFoundLinks = require('404-links')
+ * const { Writable } = require('stream')
+ *
+ * const options = {
+ *   stream: new Writable({ write: (chunk, _, done) => console.log(chunk)})
+ *   folder: './docs',
+ *   ignore: [
+ *   ]
+ * }
+ *
+ * const notFound = new NotFoundLinks(options)
+ * console.log(result)
+ */
+module.exports = function (options) {
+    throw new Error(`The folder "${options.folder}" doesn't exist, please share an existing folder.`)
 }
-
-module.exports = main

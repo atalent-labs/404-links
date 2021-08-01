@@ -1,34 +1,25 @@
 {
   "name": "@restqa/404-links",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "A simple link checker, no more broken link in your project documentation",
   "main": "index.js",
   "scripts": {
-    "start": "./404-links",
-    "start:dev": "nodemon -x ./404-links",
-    "serve": "node server.js",
     "serve:dev": "nodemon server.js",
-    "lint:fix": "standard --fix",
-    "lint": "standard",
     "test": "jest",
-    "test:watch": "jest --watch --coverage",
+    "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },
   "author": "olivier rodomond",
   "license": "MIT",
   "devDependencies": {
-    "dotenv": "^8.2.0",
-    "jest": "^25.1.0",
-    "nodemon": "^2.0.2",
-    "standard": "^14.3.1"
+    "eslint": "^7.32.0",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-node": "^11.1.0",
+    "jest": "^27.0.6",
+    "jest-runner-eslint": "^0.10.1",
+    "msw": "^0.33.2"
   },
-  "dependencies": {
-    "async": "^3.1.1",
-    "express": "^4.17.1",
-    "find": "^0.3.0",
-    "request": "^2.88.2",
-    "uuid": "^3.4.0"
-  },
+  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/restqa/404-links.git"
@@ -43,12 +34,38 @@
     "url": "https://github.com/restqa/404-links/issues"
   },
   "homepage": "https://github.com/restqa/404-links#readme",
-  "standard": {
-    "globals": [
-      "$"
+  "jest": {
+    "verbose": true,
+    "watchPlugins": [
+      "jest-runner-eslint/watch-fix"
     ],
-    "env": [
-      "jest"
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "projects": [
+      {
+        "displayName": "test",
+        "setupFilesAfterEnv": [
+          "<rootDir>/jest.setup.js"
+        ],
+        "testMatch": [
+          "<rootDir>/tests/**/*.test.js"
+        ]
+      },
+      {
+        "runner": "jest-runner-eslint",
+        "displayName": "lint",
+        "testMatch": [
+          "<rootDir>/bin/404-links",
+          "<rootDir>/src/**/*.js",
+          "<rootDir>/tests/**/*.js"
+        ]
+      }
     ]
+  },
+  "jest-runner-eslint": {
+    "cliOptions": {
+      "fix": true
+    }
   }
 }
