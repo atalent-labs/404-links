@@ -19,7 +19,10 @@
     "jest-runner-eslint": "^0.10.1",
     "msw": "^0.33.2"
   },
-  "dependencies": {},
+  "dependencies": {
+    "glob": "^7.1.7",
+    "got": "^11.8.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/restqa/404-links.git"
