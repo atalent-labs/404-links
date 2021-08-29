@@ -5,7 +5,8 @@ env:
   node: true
 parserOptions:
   ecmaVersion: 12
-rules: {}
+rules:
+  no-done-callback: off
 extends:
   - eslint:recommended
   - plugin:jest/style

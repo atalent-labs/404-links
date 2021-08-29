@@ -33,31 +33,50 @@ module.exports = function(options) {
     }
 
     const arr = glob.sync(`${options.folder}/**/*.md`)
+    let arr1 = [];
     arr.forEach(item => {
         const maString = fs.readFileSync(item, 'utf-8')
-        const resultat = maString.match(/\(((https|http){1}.*?)\)/gm)
-        resultat.forEach(item => {
-            item = item.replace('(', '')
-            item = item.replace(')', '')
-            got(item).then((value) => {
-                const obj = {
-                    url: null,
-                    status: null,
-                    passed: null
-                }
-                obj.status = value.statusCode;
-                obj.url = item;
-                if (value.statusCode === 200) {
-                    obj.passed = true
-                } else {
-                    obj.passed = false
-                }
-                options.stream.write(Buffer.from(JSON.stringify(obj)))
-                options.stream.end()
-            })
-        })
+        let resultat = maString.match(/\(((https|http){1}.*?)\)/gm)
+        resultat = [...new Set(resultat)];
+        arr1 = arr1.concat(resultat);
+    })
+    var promiseList = arr1.map((item) => {
+        item = item.replace('(', '')
+        item = item.replace(')', '')
+        return got(item);
+
     })
 
-    //options.stream.write(Buffer.from(JSON.stringify({ foo: 'bar' })))
-    //options.stream.end()
+    Promise.allSettled(promiseList).then((results) => {
+            try {
+                results.forEach(item => {
+                    const obj = {
+                        url: null,
+                        status: null,
+                        passed: null
+                    }
+
+                    if (item.status === 'fulfilled') {
+                        obj.status = item.value.statusCode;
+                        obj.url = item.value.url;
+                        obj.passed = true
+                        arr.push(item.value.statusCode)
+                    } else if (item.status === 'rejected') {
+                        obj.status = item.reason.response.statusCode;
+                        obj.passed = false
+                        obj.url = item.reason.response.url;
+                        arr.push(item.reason.response.statusCode)
+                    }
+                    options.stream.write(Buffer.from(JSON.stringify(obj)))
+                })
+            } catch (e) {
+                console.log(e);
+            }
+            options.stream.end()
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+
+
 }

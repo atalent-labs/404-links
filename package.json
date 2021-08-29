@@ -1,74 +1,72 @@
 {
-  "name": "@restqa/404-links",
-  "version": "2.0.0",
-  "description": "A simple link checker, no more broken link in your project documentation",
-  "main": "index.js",
-  "scripts": {
-    "serve:dev": "nodemon server.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
-  },
-  "author": "olivier rodomond",
-  "license": "MIT",
-  "devDependencies": {
-    "eslint": "^7.32.0",
-    "eslint-plugin-jest": "^24.4.0",
-    "eslint-plugin-node": "^11.1.0",
-    "jest": "^27.0.6",
-    "jest-runner-eslint": "^0.10.1",
-    "msw": "^0.33.2"
-  },
-  "dependencies": {
-    "glob": "^7.1.7",
-    "got": "^11.8.2"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/restqa/404-links.git"
-  },
-  "keywords": [
-    "qa",
-    "spellcheck",
-    "automation",
-    "opensource"
-  ],
-  "bugs": {
-    "url": "https://github.com/restqa/404-links/issues"
-  },
-  "homepage": "https://github.com/restqa/404-links#readme",
-  "jest": {
-    "verbose": true,
-    "watchPlugins": [
-      "jest-runner-eslint/watch-fix"
+    "name": "@restqa/404-links",
+    "version": "2.0.0",
+    "description": "A simple link checker, no more broken link in your project documentation",
+    "main": "index.js",
+    "scripts": {
+        "serve:dev": "nodemon server.js",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage"
+    },
+    "author": "olivier rodomond",
+    "license": "MIT",
+    "devDependencies": {
+        "eslint": "^7.32.0",
+        "eslint-plugin-jest": "^24.4.0",
+        "eslint-plugin-node": "^11.1.0",
+        "jest": "^27.0.6",
+        "jest-runner-eslint": "^0.10.1",
+        "msw": "^0.33.2"
+    },
+    "dependencies": {
+        "glob": "^7.1.7",
+        "got": "^11.8.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/restqa/404-links.git"
+    },
+    "keywords": [
+        "qa",
+        "spellcheck",
+        "automation",
+        "opensource"
     ],
-    "moduleFileExtensions": [
-      "js"
-    ],
-    "projects": [
-      {
-        "displayName": "test",
-        "setupFilesAfterEnv": [
-          "<rootDir>/jest.setup.js"
+    "bugs": {
+        "url": "https://github.com/restqa/404-links/issues"
+    },
+    "homepage": "https://github.com/restqa/404-links#readme",
+    "jest": {
+        "verbose": true,
+        "watchPlugins": [
+            "jest-runner-eslint/watch-fix"
         ],
-        "testMatch": [
-          "<rootDir>/tests/**/*.test.js"
+        "moduleFileExtensions": [
+            "js"
+        ],
+        "projects": [{
+                "displayName": "test",
+                "setupFilesAfterEnv": [
+                    "<rootDir>/jest.setup.js"
+                ],
+                "testMatch": [
+                    "<rootDir>/tests/**/*.test.js"
+                ]
+            },
+            {
+                "runner": "jest-runner-eslint",
+                "displayName": "lint",
+                "testMatch": [
+                    "<rootDir>/bin/404-links",
+                    "<rootDir>/src/**/*.js"
+                ]
+            }
         ]
-      },
-      {
-        "runner": "jest-runner-eslint",
-        "displayName": "lint",
-        "testMatch": [
-          "<rootDir>/bin/404-links",
-          "<rootDir>/src/**/*.js",
-          "<rootDir>/tests/**/*.js"
-        ]
-      }
-    ]
-  },
-  "jest-runner-eslint": {
-    "cliOptions": {
-      "fix": true
+    },
+    "jest-runner-eslint": {
+        "cliOptions": {
+            "fix": true
+        }
     }
-  }
 }
