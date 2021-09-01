@@ -31,22 +31,25 @@ module.exports = function(options) {
     if (!options['stream']) {
         throw new Error('The options stream is not defined, please pass a valid Writable stream.')
     }
-
-    const arr = glob.sync(`${options.folder}/**/*.md`)
-    let arr1 = [];
-    arr.forEach(item => {
-        const maString = fs.readFileSync(item, 'utf-8')
-        let resultat = maString.match(/\(((https|http){1}.*?)\)/gm)
-        resultat = [...new Set(resultat)];
-        arr1 = arr1.concat(resultat);
+    //find the content of the options folder
+    const filesContent = glob.sync(`${options.folder}/**/*.md`)
+    let results = [];
+    filesContent.forEach(item => {
+        //find the list of url write in  files 
+        const str = fs.readFileSync(item, 'utf-8')
+            //verify if the content of the file start by http or https
+        let result = str.match(/\(((https|http){1}.*?)\)/gm)
+            //delete the duplicates url
+        result = [...new Set(result)];
+        results = results.concat(result);
     })
-    var promiseList = arr1.map((item) => {
-        item = item.replace('(', '')
-        item = item.replace(')', '')
-        return got(item);
+    var promiseList = results.map((item) => {
+            // delete the brackets of each elements in the array
+            item = item.replace('(', '').replace(')', '')
+            return got(item);
 
-    })
-
+        })
+        //verify the status of the promises and add value in the object
     Promise.allSettled(promiseList).then((results) => {
             try {
                 results.forEach(item => {
@@ -60,12 +63,12 @@ module.exports = function(options) {
                         obj.status = item.value.statusCode;
                         obj.url = item.value.url;
                         obj.passed = true
-                        arr.push(item.value.statusCode)
+                        filesContent.push(item.value.statusCode)
                     } else if (item.status === 'rejected') {
                         obj.status = item.reason.response.statusCode;
                         obj.passed = false
                         obj.url = item.reason.response.url;
-                        arr.push(item.reason.response.statusCode)
+                        filesContent.push(item.reason.response.statusCode)
                     }
                     options.stream.write(Buffer.from(JSON.stringify(obj)))
                 })
