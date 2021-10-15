@@ -253,7 +253,191 @@ test('Duplicate - Get 2 sucessful result and 1 broken of the remote calls', (don
     NotFoundLinks(options)
 })
 
-test('Duplicate and multiple files - Get 2 sucessful result and 2 broken of the remote calls', (done) => {
+test('Duplicate and multiple files - Get 3 sucessful result and 3 broken of the remote calls', (done) => {
+    const results = []
+    const opt = {
+        write: (chunk, _, cb) => {
+            results.push(JSON.parse(chunk.toString()))
+            cb()
+        }
+    }
+    const testStream = new Writable(opt)
+    testStream.on('finish', () => {
+        try {
+            expect(results.length).toEqual(6)
+            expect(results[0]).toEqual({
+                url: 'https://broken.com/test',
+                status: 404,
+                passed: false
+            })
+            expect(results[1]).toEqual({
+                url: 'https://broken.com/',
+                status: 403,
+                passed: false
+            })
+            expect(results[2]).toEqual({
+                url: 'https://ggithub.com/',
+                status: 401,
+                passed: false
+            })
+            expect(results[3]).toEqual({
+                url: 'https://bitbucket.com/',
+                status: 204,
+                passed: true
+            })
+            expect(results[4]).toEqual({
+                url: 'https://github.com/',
+                status: 200,
+                passed: true
+            })
+            expect(results[5]).toEqual({
+                url: 'https://gitlab.com/',
+                status: 201,
+                passed: true
+            })
+
+            done()
+        } catch (err) {
+            done(err)
+        }
+    })
+    testStream.on('error', (err) => {
+        done(err)
+    })
+    const options = {
+        folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
+        stream: testStream
+    }
+    NotFoundLinks(options)
+})
+
+
+test('Ignore urls', (done) => {
+    const results = []
+    const opt = {
+        write: (chunk, _, cb) => {
+            results.push(JSON.parse(chunk.toString()))
+            cb()
+        }
+    }
+    const testStream = new Writable(opt)
+    testStream.on('finish', () => {
+        try {
+            expect(results.length).toEqual(6)
+            expect(results[0]).toEqual({
+                url: 'https://broken.com/test',
+                status: 404,
+                passed: false
+            })
+            expect(results[1]).toEqual({
+                url: 'https://broken.com/',
+                status: 403,
+                passed: false
+            })
+            expect(results[2]).toEqual({
+                url: 'https://ggithub.com/',
+                status: 401,
+                passed: false
+            })
+            expect(results[3]).toEqual({
+                url: 'https://bitbucket.com/',
+                status: 204,
+                passed: true
+            })
+            expect(results[4]).toEqual({
+                url: 'https://github.com',
+                status: 'ignored',
+                passed: true
+            })
+            expect(results[5]).toEqual({
+                url: 'https://gitlab.com',
+                status: 'ignored',
+                passed: true
+            })
+            done()
+        } catch (err) {
+            done(err)
+        }
+    })
+    testStream.on('error', (err) => {
+        done(err)
+    })
+    const options = {
+        folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
+        stream: testStream,
+        ignore: {
+          urls: [
+            'https://gitlab.com',
+            'https://github.com'
+          ]
+        }
+    }
+    NotFoundLinks(options)
+})
+
+test('Ignore urls (using wildcards)', (done) => {
+    const results = []
+    const opt = {
+        write: (chunk, _, cb) => {
+          results.push(JSON.parse(chunk.toString()))
+          cb()
+        }
+    }
+    const testStream = new Writable(opt)
+    testStream.on('finish', () => {
+        try {
+            expect(results.length).toEqual(6)
+            expect(results[0]).toEqual({
+                url: 'https://broken.com/test',
+                status: 'ignored',
+                passed: true
+            })
+            expect(results[1]).toEqual({
+                url: 'https://broken.com',
+                status: 'ignored',
+                passed: true
+            })
+            expect(results[2]).toEqual({
+                url: 'https://ggithub.com/',
+                status: 401,
+                passed: false
+            })
+            expect(results[3]).toEqual({
+                url: 'https://bitbucket.com/',
+                status: 204,
+                passed: true
+            })
+            expect(results[4]).toEqual({
+                url: 'https://github.com/',
+                status: 200,
+                passed: true
+            })
+            expect(results[5]).toEqual({
+                url: 'https://gitlab.com/',
+                status: 201,
+                passed: true
+            })
+            done()
+        } catch (err) {
+            done(err)
+        }
+    })
+    testStream.on('error', (err) => {
+        done(err)
+    })
+    const options = {
+        folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
+        stream: testStream,
+        ignore: {
+          urls: [
+            'https://broken.com/*'
+          ]
+        }
+    }
+    NotFoundLinks(options)
+})
+
+test('Ignore files', (done) => {
     const results = []
     const opt = {
         write: (chunk, _, cb) => {
@@ -276,16 +460,15 @@ test('Duplicate and multiple files - Get 2 sucessful result and 2 broken of the 
                 passed: false
             })
             expect(results[2]).toEqual({
-                url: 'https://github.com/',
-                status: 200,
-                passed: true
+                url: 'https://ggithub.com/',
+                status: 401,
+                passed: false
             })
             expect(results[3]).toEqual({
-                url: 'https://gitlab.com/',
-                status: 201,
+                url: 'https://bitbucket.com/',
+                status: 204,
                 passed: true
             })
-
             done()
         } catch (err) {
             done(err)
@@ -296,8 +479,64 @@ test('Duplicate and multiple files - Get 2 sucessful result and 2 broken of the 
     })
     const options = {
         folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
-        stream: testStream
+        stream: testStream,
+        ignore: {
+          files: [
+            './file-success.md'
+          ]
+        }
     }
     NotFoundLinks(options)
+})
 
+test('Ignore files', (done) => {
+    const results = []
+    const opt = {
+        write: (chunk, _, cb) => {
+            results.push(JSON.parse(chunk.toString()))
+            cb()
+        }
+    }
+    const testStream = new Writable(opt)
+    testStream.on('finish', () => {
+        try {
+            expect(results.length).toEqual(4)
+            expect(results[0]).toEqual({
+                url: 'https://broken.com/test',
+                status: 404,
+                passed: false
+            })
+            expect(results[1]).toEqual({
+                url: 'https://broken.com/',
+                status: 403,
+                passed: false
+            })
+            expect(results[2]).toEqual({
+                url: 'https://ggithub.com/',
+                status: 401,
+                passed: false
+            })
+            expect(results[3]).toEqual({
+                url: 'https://bitbucket.com/',
+                status: 204,
+                passed: true
+            })
+            done()
+        } catch (err) {
+            done(err)
+        }
+    })
+    testStream.on('error', (err) => {
+        done(err)
+    })
+    const options = {
+      folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
+      stream: testStream,
+      ignore: {
+        files: [
+          './file-success.md'
+        ]
+      }
+    }
+    NotFoundLinks(options)
 })
