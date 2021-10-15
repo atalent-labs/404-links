@@ -31,7 +31,7 @@ const { Readable } = require('stream');
  */
 
 
-class MyReadable extends Readable {
+class Stream404 extends Readable {
     constructor(options) {
       super();
 
@@ -138,4 +138,4 @@ class MyReadable extends Readable {
 }
 
 
-module.exports = MyReadable
+module.exports = Stream404
