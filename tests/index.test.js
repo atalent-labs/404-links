@@ -12,531 +12,527 @@ test('throw an error if the options folder doesn\'t contains a valid folder', ()
         const options = {
             folder: '/fooooooo'
         }
-        NotFoundLinks(options)
+        new NotFoundLinks(options)
     }).toThrow('The folder "/fooooooo" doesn\'t exist, please share an existing folder.')
 })
 
-test('throw an error if the options stream doesn\'t contains a valid Stream', () => {
-    expect(() => {
-        const options = {
-            folder: process.cwd()
-        }
-        NotFoundLinks(options)
-    }).toThrow('The options stream is not defined, please pass a valid Writable stream.')
-    expect(() => {
-        const options = {
-            folder: process.cwd(),
-            stream: undefined
-        }
-        NotFoundLinks(options)
-    }).toThrow('The options stream is not defined, please pass a valid Writable stream.')
-})
-
 test('Get the sucessful result of the remote calls', (done) => {
-    const opt = {
-        write: (chunk, _, done) => {
-            expect(JSON.parse(chunk.toString())).toEqual({
-                url: 'https://github.com/',
-                status: 200,
-                passed: true
-            })
-            done()
-        }
-    }
-    const testStream = new Writable(opt)
-    testStream.on('finish', done)
     const options = {
-        folder: path.resolve(__dirname, 'fixtures/remote-success-case-1-link'),
-        stream: testStream
+      folder: path.resolve(__dirname, 'fixtures/remote-success-case-1-link')
     }
-    NotFoundLinks(options)
+    const stream = new NotFoundLinks(options)
+    stream
+      .on('data', (chunk) => {
+        expect(JSON.parse(chunk.toString())).toEqual({
+            url: 'https://github.com/',
+            status: 200,
+            passed: true
+        })
+      })
+      .on('end', done)
+      .on('error', done)
 })
 
 test('Get 2 sucessful result of the remote calls (status code 200/201)', (done) => {
-    const results = []
-    const opt = {
-        write: (chunk, _, cb) => {
-            results.push(JSON.parse(chunk.toString()))
-            cb()
-        }
-    }
-    const testStream = new Writable(opt)
-    testStream.on('finish', () => {
-        try {
-            expect(results[0]).toEqual({
-                url: 'https://github.com/',
-                status: 200,
-                passed: true
-            })
-            expect(results[1]).toEqual({
-                url: 'https://gitlab.com/',
-                status: 201,
-                passed: true
-            })
-            done()
-        } catch (err) {
-            done(err)
-        }
-    })
-    testStream.on('error', (err) => {
-        done(err)
-    })
     const options = {
-        folder: path.resolve(__dirname, 'fixtures/remote-success-case-2-links'),
-        stream: testStream
+      folder: path.resolve(__dirname, 'fixtures/remote-success-case-2-links'),
     }
-    NotFoundLinks(options)
+    const stream = new NotFoundLinks(options)
+    .on('data', () => {})
+    .on('end', () => {
+      try {
+          const { result, errors } = stream
+          expect(result.length).toEqual(2)
+          expect(result[0]).toEqual({
+              url: 'https://github.com/',
+              status: 200,
+              passed: true
+          })
+          expect(result[1]).toEqual({
+              url: 'https://gitlab.com/',
+              status: 201,
+              passed: true
+          })
+          expect(errors.length).toEqual(0)
+          done()
+      } catch (err) {
+          done(err)
+      }
+    })
+    .on('error', done)
 })
 
 test('Get 2 sucessful result of the remote calls (status code 200/201)', (done) => {
-    const results = []
-    const opt = {
-        write: (chunk, _, cb) => {
-            results.push(JSON.parse(chunk.toString()))
-            cb()
-        }
-    }
-    const testStream = new Writable(opt)
-    testStream.on('finish', () => {
-        try {
-            expect(results[0]).toEqual({
-                url: 'https://github.com/',
-                status: 200,
-                passed: true
-            })
-            expect(results[1]).toEqual({
-                url: 'https://gitlab.com/',
-                status: 201,
-                passed: true
-            })
-            done()
-        } catch (err) {
-            done(err)
-        }
-    })
-    testStream.on('error', (err) => {
-        done(err)
-    })
     const options = {
-        folder: path.resolve(__dirname, 'fixtures/remote-success-case-2-links'),
-        stream: testStream
+      folder: path.resolve(__dirname, 'fixtures/remote-success-case-2-links'),
     }
-    NotFoundLinks(options)
+    const stream = new NotFoundLinks(options)
+    .on('data', () => {})
+    .on('end', () => {
+      try {
+          const { result, errors } = stream
+          expect(result.length).toEqual(2)
+          expect(result[0]).toEqual({
+              url: 'https://github.com/',
+              status: 200,
+              passed: true
+          })
+          expect(result[1]).toEqual({
+              url: 'https://gitlab.com/',
+              status: 201,
+              passed: true
+          })
+          expect(errors.length).toEqual(0)
+          done()
+      } catch (err) {
+          done(err)
+      }
+    })
+    .on('error', done)
 })
 
-test('Get 2 sucessful result and 1 broken of the remote calls (status code 200/201/404)', (done) => {
-    const results = []
-    const opt = {
-        write: (chunk, _, cb) => {
-            results.push(JSON.parse(chunk.toString()))
-            cb()
-        }
-    }
-    const testStream = new Writable(opt)
-    testStream.on('finish', () => {
-        try {
-            expect(results[0]).toEqual({
-                url: 'https://github.com/',
-                status: 200,
-                passed: true
-            })
-            expect(results[1]).toEqual({
-                url: 'https://gitlab.com/',
-                status: 201,
-                passed: true
-            })
-            expect(results[2]).toEqual({
-                url: 'https://broken.com/test',
-                status: 404,
-                passed: false
-            })
-            done()
-        } catch (err) {
-            done(err)
-        }
-    })
-    testStream.on('error', (err) => {
-        done(err)
-    })
+test('Get 2 sucessful result and 1 broken of the remote calls (status code 200/201/404)', () => {
+  return new Promise((resolve, reject) => {
     const options = {
-        folder: path.resolve(__dirname, 'fixtures/remote-invalid-case-3-links'),
-        stream: testStream
+      folder: path.resolve(__dirname, 'fixtures/remote-invalid-case-3-links'),
     }
-    NotFoundLinks(options)
+    const stream = new NotFoundLinks(options)
+    .on('data', () => {})
+    .on('end', () => {
+      try {
+          const { result, errors } = stream
+          expect(result.length).toEqual(3)
+          expect(result[0]).toEqual({
+              url: 'https://github.com/',
+              status: 200,
+              passed: true
+          })
+          expect(result[1]).toEqual({
+              url: 'https://gitlab.com/',
+              status: 201,
+              passed: true
+          })
+          expect(result[2]).toEqual({
+              url: 'https://broken.com/test',
+              status: 404,
+              passed: false
+          })
+          expect(errors.length).toEqual(1)
+          expect(errors[0]).toEqual({
+              url: 'https://broken.com/test',
+              status: 404,
+              passed: false
+          })
+          resolve()
+      } catch (err) {
+          reject(err)
+      }
+    })
+    .on('error', reject)
+  })
 })
 
-test('Get only 4 broken of the remote calls (status code 404/ 500/ 403 /401)', (done) => {
-    const results = []
-    const opt = {
-        write: (chunk, _, cb) => {
-            results.push(JSON.parse(chunk.toString()))
-            cb()
-        }
-    }
-    const testStream = new Writable(opt)
-    testStream.on('finish', () => {
-        try {
-            expect(results[0]).toEqual({
-                url: 'https://ggithub.com/',
-                status: 401,
-                passed: false
-            })
-            expect(results[1]).toEqual({
-                url: 'https://gittlab.com/',
-                status: 500,
-                passed: false
-            })
-            expect(results[2]).toEqual({
-                url: 'https://broken.com/test',
-                status: 404,
-                passed: false
-            })
-            expect(results[3]).toEqual({
-                url: 'https://broken.com/',
-                status: 403,
-                passed: false
-            })
-            done()
-        } catch (err) {
-            done(err)
-        }
-    })
-    testStream.on('error', (err) => {
-        done(err)
-    })
+test('Get only 4 broken of the remote calls (status code 404/ 500/ 403 /401)', () => {
+  return new Promise((resolve, reject) => {
     const options = {
-        folder: path.resolve(__dirname, 'fixtures/remote-invalid-case-4-links'),
-        stream: testStream
+      folder: path.resolve(__dirname, 'fixtures/remote-invalid-case-4-links'),
     }
-    NotFoundLinks(options)
+    const stream = new NotFoundLinks(options)
+    .on('data', () => {})
+    .on('end', () => {
+      try {
+          const { result, errors } = stream
+          expect(result.length).toEqual(4)
+          expect(result[0]).toEqual({
+              url: 'https://ggithub.com/',
+              status: 401,
+              passed: false
+          })
+          expect(result[1]).toEqual({
+              url: 'https://gittlab.com/',
+              status: 500,
+              passed: false
+          })
+          expect(result[2]).toEqual({
+              url: 'https://broken.com/test',
+              status: 404,
+              passed: false
+          })
+          expect(result[3]).toEqual({
+              url: 'https://broken.com/',
+              status: 403,
+              passed: false
+          })
+          expect(errors.length).toEqual(4)
+          expect(errors).toEqual(result)
+          resolve()
+      } catch (err) {
+          reject(err)
+      }
+    })
+    .on('error', reject)
+  })
 })
 
-test('Duplicate - Get 2 sucessful result and 1 broken of the remote calls', (done) => {
-    const results = []
-    const opt = {
-        write: (chunk, _, cb) => {
-            results.push(JSON.parse(chunk.toString()))
-            cb()
-        }
-    }
-    const testStream = new Writable(opt)
-    testStream.on('finish', () => {
-        try {
-            expect(results.length).toEqual(3)
-            expect(results[0]).toEqual({
-                url: 'https://github.com/',
-                status: 200,
-                passed: true
-            })
-            expect(results[1]).toEqual({
-                url: 'https://gitlab.com/',
-                status: 201,
-                passed: true
-            })
-            expect(results[2]).toEqual({
-                url: 'https://broken.com/test',
-                status: 404,
-                passed: false
-            })
-            done()
-        } catch (err) {
-            done(err)
-        }
-    })
-    testStream.on('error', (err) => {
-        done(err)
-    })
+test('Duplicate - Get 2 sucessful result and 1 broken of the remote calls', () => {
+  return new Promise((resolve, reject) => {
     const options = {
-        folder: path.resolve(__dirname, 'fixtures/remote-duplicate-links'),
-        stream: testStream
+      folder: path.resolve(__dirname, 'fixtures/remote-duplicate-links'),
     }
-    NotFoundLinks(options)
+    const stream = new NotFoundLinks(options)
+    .on('data', () => {})
+    .on('end', () => {
+      try {
+          const { result, errors } = stream
+          expect(result.length).toEqual(3)
+          expect(result[0]).toEqual({
+              url: 'https://github.com/',
+              status: 200,
+              passed: true
+          })
+          expect(result[1]).toEqual({
+              url: 'https://gitlab.com/',
+              status: 201,
+              passed: true
+          })
+          expect(result[2]).toEqual({
+              url: 'https://broken.com/test',
+              status: 404,
+              passed: false
+          })
+          expect(errors.length).toEqual(1)
+          expect(errors[0]).toEqual({
+              url: 'https://broken.com/test',
+              status: 404,
+              passed: false
+          })
+          resolve()
+      } catch (err) {
+          reject(err)
+      }
+    })
+    .on('error', reject)
+  })
 })
 
-test('Duplicate and multiple files - Get 3 sucessful result and 3 broken of the remote calls', (done) => {
-    const results = []
-    const opt = {
-        write: (chunk, _, cb) => {
-            results.push(JSON.parse(chunk.toString()))
-            cb()
-        }
-    }
-    const testStream = new Writable(opt)
-    testStream.on('finish', () => {
-        try {
-            expect(results.length).toEqual(6)
-            expect(results[0]).toEqual({
-                url: 'https://broken.com/test',
-                status: 404,
-                passed: false
-            })
-            expect(results[1]).toEqual({
-                url: 'https://broken.com/',
-                status: 403,
-                passed: false
-            })
-            expect(results[2]).toEqual({
-                url: 'https://ggithub.com/',
-                status: 401,
-                passed: false
-            })
-            expect(results[3]).toEqual({
-                url: 'https://bitbucket.com/',
-                status: 204,
-                passed: true
-            })
-            expect(results[4]).toEqual({
-                url: 'https://github.com/',
-                status: 200,
-                passed: true
-            })
-            expect(results[5]).toEqual({
-                url: 'https://gitlab.com/',
-                status: 201,
-                passed: true
-            })
-
-            done()
-        } catch (err) {
-            done(err)
-        }
-    })
-    testStream.on('error', (err) => {
-        done(err)
-    })
+test('Duplicate and multiple files - Get 3 sucessful result and 3 broken of the remote calls', () => {
+  return new Promise((resolve, reject) => {
     const options = {
-        folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
-        stream: testStream
+      folder: path.resolve(__dirname, 'fixtures/remote-multiple-files')
     }
-    NotFoundLinks(options)
+    const stream = new NotFoundLinks(options)
+    .on('data', () => {})
+    .on('end', () => {
+      try {
+          const { result, errors } = stream
+          expect(result.length).toEqual(6)
+          expect(result[0]).toEqual({
+              url: 'https://broken.com/test',
+              status: 404,
+              passed: false
+          })
+          expect(result[1]).toEqual({
+              url: 'https://broken.com/',
+              status: 403,
+              passed: false
+          })
+          expect(result[2]).toEqual({
+              url: 'https://ggithub.com/',
+              status: 401,
+              passed: false
+          })
+          expect(result[3]).toEqual({
+              url: 'https://bitbucket.com/',
+              status: 204,
+              passed: true
+          })
+          expect(result[4]).toEqual({
+              url: 'https://github.com/',
+              status: 200,
+              passed: true
+          })
+          expect(result[5]).toEqual({
+              url: 'https://gitlab.com/',
+              status: 201,
+              passed: true
+          })
+          expect(errors.length).toEqual(3)
+          expect(errors[0]).toEqual({
+              url: 'https://broken.com/test',
+              status: 404,
+              passed: false
+          })
+          expect(errors[1]).toEqual({
+              url: 'https://broken.com/',
+              status: 403,
+              passed: false
+          })
+          expect(errors[2]).toEqual({
+              url: 'https://ggithub.com/',
+              status: 401,
+              passed: false
+          })
+          resolve()
+      } catch (err) {
+          reject(err)
+      }
+    })
+    .on('error', reject)
+  })
 })
 
 
-test('Ignore urls', (done) => {
-    const results = []
-    const opt = {
-        write: (chunk, _, cb) => {
-            results.push(JSON.parse(chunk.toString()))
-            cb()
-        }
-    }
-    const testStream = new Writable(opt)
-    testStream.on('finish', () => {
-        try {
-            expect(results.length).toEqual(6)
-            expect(results[0]).toEqual({
-                url: 'https://broken.com/test',
-                status: 404,
-                passed: false
-            })
-            expect(results[1]).toEqual({
-                url: 'https://broken.com/',
-                status: 403,
-                passed: false
-            })
-            expect(results[2]).toEqual({
-                url: 'https://ggithub.com/',
-                status: 401,
-                passed: false
-            })
-            expect(results[3]).toEqual({
-                url: 'https://bitbucket.com/',
-                status: 204,
-                passed: true
-            })
-            expect(results[4]).toEqual({
-                url: 'https://github.com',
-                status: 'ignored',
-                passed: true
-            })
-            expect(results[5]).toEqual({
-                url: 'https://gitlab.com',
-                status: 'ignored',
-                passed: true
-            })
-            done()
-        } catch (err) {
-            done(err)
-        }
-    })
-    testStream.on('error', (err) => {
-        done(err)
-    })
-    const options = {
-        folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
-        stream: testStream,
-        ignore: {
-          urls: [
-            'https://gitlab.com',
-            'https://github.com'
-          ]
-        }
-    }
-    NotFoundLinks(options)
-})
-
-test('Ignore urls (using wildcards)', (done) => {
-    const results = []
-    const opt = {
-        write: (chunk, _, cb) => {
-          results.push(JSON.parse(chunk.toString()))
-          cb()
-        }
-    }
-    const testStream = new Writable(opt)
-    testStream.on('finish', () => {
-        try {
-            expect(results.length).toEqual(6)
-            expect(results[0]).toEqual({
-                url: 'https://broken.com/test',
-                status: 'ignored',
-                passed: true
-            })
-            expect(results[1]).toEqual({
-                url: 'https://broken.com',
-                status: 'ignored',
-                passed: true
-            })
-            expect(results[2]).toEqual({
-                url: 'https://ggithub.com/',
-                status: 401,
-                passed: false
-            })
-            expect(results[3]).toEqual({
-                url: 'https://bitbucket.com/',
-                status: 204,
-                passed: true
-            })
-            expect(results[4]).toEqual({
-                url: 'https://github.com/',
-                status: 200,
-                passed: true
-            })
-            expect(results[5]).toEqual({
-                url: 'https://gitlab.com/',
-                status: 201,
-                passed: true
-            })
-            done()
-        } catch (err) {
-            done(err)
-        }
-    })
-    testStream.on('error', (err) => {
-        done(err)
-    })
-    const options = {
-        folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
-        stream: testStream,
-        ignore: {
-          urls: [
-            'https://broken.com/*'
-          ]
-        }
-    }
-    NotFoundLinks(options)
-})
-
-test('Ignore files', (done) => {
-    const results = []
-    const opt = {
-        write: (chunk, _, cb) => {
-            results.push(JSON.parse(chunk.toString()))
-            cb()
-        }
-    }
-    const testStream = new Writable(opt)
-    testStream.on('finish', () => {
-        try {
-            expect(results.length).toEqual(4)
-            expect(results[0]).toEqual({
-                url: 'https://broken.com/test',
-                status: 404,
-                passed: false
-            })
-            expect(results[1]).toEqual({
-                url: 'https://broken.com/',
-                status: 403,
-                passed: false
-            })
-            expect(results[2]).toEqual({
-                url: 'https://ggithub.com/',
-                status: 401,
-                passed: false
-            })
-            expect(results[3]).toEqual({
-                url: 'https://bitbucket.com/',
-                status: 204,
-                passed: true
-            })
-            done()
-        } catch (err) {
-            done(err)
-        }
-    })
-    testStream.on('error', (err) => {
-        done(err)
-    })
-    const options = {
-        folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
-        stream: testStream,
-        ignore: {
-          files: [
-            './file-success.md'
-          ]
-        }
-    }
-    NotFoundLinks(options)
-})
-
-test('Ignore files', (done) => {
-    const results = []
-    const opt = {
-        write: (chunk, _, cb) => {
-            results.push(JSON.parse(chunk.toString()))
-            cb()
-        }
-    }
-    const testStream = new Writable(opt)
-    testStream.on('finish', () => {
-        try {
-            expect(results.length).toEqual(4)
-            expect(results[0]).toEqual({
-                url: 'https://broken.com/test',
-                status: 404,
-                passed: false
-            })
-            expect(results[1]).toEqual({
-                url: 'https://broken.com/',
-                status: 403,
-                passed: false
-            })
-            expect(results[2]).toEqual({
-                url: 'https://ggithub.com/',
-                status: 401,
-                passed: false
-            })
-            expect(results[3]).toEqual({
-                url: 'https://bitbucket.com/',
-                status: 204,
-                passed: true
-            })
-            done()
-        } catch (err) {
-            done(err)
-        }
-    })
-    testStream.on('error', (err) => {
-        done(err)
-    })
+test('Ignore urls', () => {
+  return new Promise((resolve, reject) => {
     const options = {
       folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
-      stream: testStream,
+      ignore: {
+        urls: [
+          'https://gitlab.com',
+          'https://github.com'
+        ]
+      }
+    }
+    const stream = new NotFoundLinks(options)
+    .on('data', () => {})
+    .on('end', () => {
+      try {
+          const { result, errors } = stream
+          expect(result.length).toEqual(6)
+          expect(result[0]).toEqual({
+              url: 'https://broken.com/test',
+              status: 404,
+              passed: false
+          })
+          expect(result[1]).toEqual({
+              url: 'https://broken.com/',
+              status: 403,
+              passed: false
+          })
+          expect(result[2]).toEqual({
+              url: 'https://ggithub.com/',
+              status: 401,
+              passed: false
+          })
+          expect(result[3]).toEqual({
+              url: 'https://bitbucket.com/',
+              status: 204,
+              passed: true
+          })
+          expect(result[4]).toEqual({
+              url: 'https://github.com',
+              status: 'ignored',
+              passed: true
+          })
+          expect(result[5]).toEqual({
+              url: 'https://gitlab.com',
+              status: 'ignored',
+              passed: true
+          })
+          expect(errors.length).toEqual(3)
+          expect(errors[0]).toEqual({
+              url: 'https://broken.com/test',
+              status: 404,
+              passed: false
+          })
+          expect(errors[1]).toEqual({
+              url: 'https://broken.com/',
+              status: 403,
+              passed: false
+          })
+          expect(errors[2]).toEqual({
+              url: 'https://ggithub.com/',
+              status: 401,
+              passed: false
+          })
+          resolve()
+      } catch (err) {
+          reject(err)
+      }
+    })
+    .on('error', reject)
+  })
+})
+
+test('Ignore urls (using wildcards)', () => {
+  return new Promise((resolve, reject) => {
+    const options = {
+      folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
+      ignore: {
+        urls: [
+          'https://broken.com/*'
+        ]
+      }
+    }
+    const stream = new NotFoundLinks(options)
+    .on('data', () => {})
+    .on('end', () => {
+      try {
+          const { result, errors } = stream
+          expect(result.length).toEqual(6)
+          expect(result[0]).toEqual({
+              url: 'https://broken.com/test',
+              status: 'ignored',
+              passed: true
+          })
+          expect(result[1]).toEqual({
+              url: 'https://broken.com',
+              status: 'ignored',
+              passed: true
+          })
+          expect(result[2]).toEqual({
+              url: 'https://ggithub.com/',
+              status: 401,
+              passed: false
+          })
+          expect(result[3]).toEqual({
+              url: 'https://bitbucket.com/',
+              status: 204,
+              passed: true
+          })
+          expect(result[4]).toEqual({
+              url: 'https://github.com/',
+              status: 200,
+              passed: true
+          })
+          expect(result[5]).toEqual({
+              url: 'https://gitlab.com/',
+              status: 201,
+              passed: true
+          })
+          expect(errors.length).toEqual(1)
+          expect(errors[0]).toEqual({
+              url: 'https://ggithub.com/',
+              status: 401,
+              passed: false
+          })
+          resolve()
+      } catch (err) {
+          reject(err)
+      }
+    })
+    .on('error', reject)
+  })
+})
+
+test('Ignore files', () => {
+  return new Promise((resolve, reject) => {
+    const options = {
+      folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
       ignore: {
         files: [
           './file-success.md'
         ]
       }
     }
-    NotFoundLinks(options)
+    const stream = new NotFoundLinks(options)
+    .on('data', () => {})
+    .on('end', () => {
+      try {
+          const { result, errors } = stream
+          expect(result.length).toEqual(4)
+          expect(result[0]).toEqual({
+              url: 'https://broken.com/test',
+              status: 404,
+              passed: false
+          })
+          expect(result[1]).toEqual({
+              url: 'https://broken.com/',
+              status: 403,
+              passed: false
+          })
+          expect(result[2]).toEqual({
+              url: 'https://ggithub.com/',
+              status: 401,
+              passed: false
+          })
+          expect(result[3]).toEqual({
+              url: 'https://bitbucket.com/',
+              status: 204,
+              passed: true
+          })
+          expect(errors.length).toEqual(3)
+          expect(errors[0]).toEqual({
+              url: 'https://broken.com/test',
+              status: 404,
+              passed: false
+          })
+          expect(errors[1]).toEqual({
+              url: 'https://broken.com/',
+              status: 403,
+              passed: false
+          })
+          expect(errors[2]).toEqual({
+              url: 'https://ggithub.com/',
+              status: 401,
+              passed: false
+          })
+          resolve()
+      } catch (err) {
+          reject(err)
+      }
+    })
+    .on('error', reject)
+  })
+})
+
+test('Ignore files', () => {
+  return new Promise((resolve, reject) => {
+    const options = {
+      folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
+      ignore: {
+        files: [
+          './file-success.md'
+        ]
+      }
+    }
+    const stream = new NotFoundLinks(options)
+    .on('data', () => {})
+    .on('end', () => {
+      try {
+          const { result, errors } = stream
+          expect(result.length).toEqual(4)
+          expect(result[0]).toEqual({
+              url: 'https://broken.com/test',
+              status: 404,
+              passed: false
+          })
+          expect(result[1]).toEqual({
+              url: 'https://broken.com/',
+              status: 403,
+              passed: false
+          })
+          expect(result[2]).toEqual({
+              url: 'https://ggithub.com/',
+              status: 401,
+              passed: false
+          })
+          expect(result[3]).toEqual({
+              url: 'https://bitbucket.com/',
+              status: 204,
+              passed: true
+          })
+          expect(errors.length).toEqual(3)
+          expect(errors[0]).toEqual({
+              url: 'https://broken.com/test',
+              status: 404,
+              passed: false
+          })
+          expect(errors[1]).toEqual({
+              url: 'https://broken.com/',
+              status: 403,
+              passed: false
+          })
+          expect(errors[2]).toEqual({
+              url: 'https://ggithub.com/',
+              status: 401,
+              passed: false
+          })
+          resolve()
+      } catch (err) {
+          reject(err)
+      }
+    })
+    .on('error', reject)
+  })
 })

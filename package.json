@@ -4,13 +4,17 @@
     "description": "A simple link checker, no more broken link in your project documentation",
     "main": "index.js",
     "scripts": {
-        "serve:dev": "nodemon server.js",
         "test": "jest",
+        "lint": "elint",
+        "lint:fix": "eslint --fix",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage"
     },
     "author": "olivier rodomond",
     "license": "MIT",
+    "bin": {
+        "404-links": "./404-links.js"
+    },
     "devDependencies": {
         "eslint": "^7.32.0",
         "eslint-plugin-jest": "^24.4.0",
