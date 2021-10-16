@@ -5,5 +5,5 @@ branding:
   color: 'green'
 description: "It is a part of quality assurance to check that your markdown files doesn't contains broken links"
 runs:
-  using: 'node14'
+  using: 'node12'
   image: '404-links.js'
