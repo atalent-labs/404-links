@@ -38,7 +38,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: 'restqa-404-links'
-      uses: restqa/404-links@v2.0.0
+      uses: restqa/404-links@v2.1.0
 ```
 
 ## Customize the linting
