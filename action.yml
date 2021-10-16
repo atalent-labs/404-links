@@ -4,18 +4,6 @@ branding:
   icon: 'link-2'
   color: 'green'
 description: "It is a part of quality assurance to check that your markdown files doesn't contains broken links"
-inputs:
-  path: 
-   description: 'Specify path to a custom folder where your markdown files are located.'
-   required: false
-   default: '.'
-  ignore:
-   description: 'Ignore urls based separated by a comma'
-   required: false
-   default: ''
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.path }}
-    - ${{ inputs.ignore }}
+  using: 'node14'
+  image: '404-links.js'

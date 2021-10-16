@@ -1,34 +1,141 @@
-const EventEmitter = require('events')
-const find = require('find')
-const File = require('./files')
-const Url = require('./urls')
-const fs = require('fs')
+const fs = require('fs');
+const glob = require("glob");
+const got = require('got');
+const path = require('path');
+const { Readable } = require('stream');
 
-function main (config) {
-  config.count = 0
-  config.i = 0
-  config.event = new EventEmitter()
-  config.ignore = config.ignore || []
+/**
+ * Instanciate 404-links
+ *
+ * @param {Object} options
+ * @param {string} (optional) options.folder - Define the folder where the markdown files are located
+ * @param {array<string>} (optional) options.ignore.urls - Ignore a list of urls
+ * @param {array<string>} (optional) options.ignore.files - List of file that we do not want to parse
+ * @return {Readable}
+ *
+ * @example
+ *
+ * const NotFoundLinks = require('404-links')
+ *
+ * const options = {
+ *   folder: './docs',
+ *   ignore: {
+ *     urls: [
+ *     ],
+ *     files: [
+ *     ]
+ *   }
+ * }
+ *
+ * const ReadableStream = new NotFoundLinks(options)
+ */
 
-  if (Array.isArray(config.ignore) === false) {
-    throw new Error('The option value "ignore" should be an array')
-  }
 
-  if (fs.existsSync(config.folder) === false) {
-    throw new Error('The folder "./rerere" doesn\'t exist')
-  }
+class Stream404 extends Readable {
+    constructor(options) {
+      super();
 
-  const file = new File(config)
-  const url = new Url(config)
+      if (options && fs.existsSync(options.folder) == false) {
+        throw new Error(`The folder "${options.folder}" doesn't exist, please share an existing folder.`)
+      }
 
-  find.file(/\.md$/, config.folder, function (files) {
-    files.forEach(_ => config.event.emit('/file/', _))
-  })
+      options.ignore = options.ignore || {}
+      options.ignore.urls = options.ignore.urls || []
+      options.ignore.files = options.ignore.files || []
+      options.ignore.files = options.ignore.files.map(file => {
+        return path.resolve(options.folder, file)
+      })
 
-  config.event.on('/file/', file.search)
-  config.event.on('/url/', url.check)
+      this.options = options
+      this._result = []
 
-  return config.event
+      // find the content of the options folder
+      const fileList = glob.sync(`${options.folder}/**/*.+(md|mdx)`)
+      let urls = fileList
+        .filter((filename) => {
+          return false === options.ignore.files.includes(filename)
+        })
+        .reduce((all, item) => {
+          const fileContent = fs.readFileSync(item, 'utf-8')
+          let match = fileContent
+            .match(/\(((https|http){1}.*?)\)/gm)
+            .map(url => url.replace('(', '').replace(')', ''))
+          return all.concat(match)
+        }, [])
+
+      this.urls = [...new Set(urls)];
+
+      (async () => {
+        try {
+          const result = this.fetchStatus(this.urls, this.options.ignore.urls);
+          for await (const item of result) {
+            this._result.push(item)
+            this.push(Buffer.from(JSON.stringify(item)))
+          }
+        } catch(e) {
+          console.log(e)
+        }
+        this.push(null)
+      })()
+    }
+
+    get result () {
+      return this._result
+    }
+
+    get errors () {
+      return this._result.filter(item => !item.passed)
+    }
+
+    _read () {
+     null
+    }
+
+    async *fetchStatus (urls, ignoreUrls = []){
+      for (let _url of urls) {
+        if (this.shouldWeIgnore(_url, ignoreUrls)) {
+          yield {
+            url: _url,
+            status: 'ignored',
+            passed: true
+          }
+        } else {
+          const options = {
+            throwHttpErrors: false,
+            timeout: 5000
+          }
+          try {
+          const { statusCode, url } = await got(_url, options)
+            yield {
+              url,
+              status: statusCode,
+              passed: String(statusCode)[0] === '2'
+            }
+          } catch (e) {
+            yield {
+              url: _url,
+              status: e.code,
+              passed: false
+            }
+          }
+        }
+      }
+    }
+    
+    shouldWeIgnore(url, list) {
+      const result = list.some(ignore => {
+        const match = ignore.split('/*')
+        if (match.length === 1) {
+          return match[0] === url
+        } else if(match.length === 2) {
+          return url.startsWith(match[0]) || match[0] === url
+        } else {
+          return false
+        }
+      })
+      return result
+    }
 }
 
-module.exports = main
+
+module.exports = Stream404

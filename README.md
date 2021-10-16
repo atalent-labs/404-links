@@ -6,45 +6,29 @@
 
 - [About the Project](#about)
 - [Github Action](#github-action)
-- [Gitlab CI](#gitlab-ci)
-- [API](#api-http-server-version)
 
 ## About
 
 A part of a good developer experience is to ensure that the documentation is accurate.
-Since our repositories depends on different website to get additional detail the 404-links command will support you the validate all the links includes in your documentation.
+Since most of the repositories depend on different website to get additional detail.
+This Github action will support you to validate all the links includes in your documentation.
 
-**The developer experience (DX) is definetly a part of the Product Quality assurance**
+**The developer experience (DX) should be a part of the Product Quality Assurance**
 
-You can run the command from different way:
-- node
-- docker
-- Rest API
-- github actions
-- gitlab CI
+## Versions
 
-### Customer variable
-
-You can customize the script by adding the 2 arguments:
-
-* `path`: to target a specific folder (default: `.`)
-* `ignore`: to ignore some url, need to be separated by a coma. example: https://test.local,https://google.com (default: null)
-
-The command with arguments should look like:
-
-```
-$ 404-links . "https://google.com,http://my-test.io"
-```
+* [2.0.0](https://github.com/restqa/404-links) (current version)
+* [1.0.1](https://github.com/restqa/404-links/tree/1.0.1)
 
 ## Github Action
 
 If you want to use the script on github action:
 
-1. Create a new file in your repository : `.github/workflows/action.yml`
-2. Copy paste the informations in your `action.yml`:
+1. Create a new file in your repository : `.github/workflows/markdown-lint.yml`
+2. Copy paste the informations in your `.github/workflows/markdown-lint.yml`:
 
 ```
-name: 404 links
+name: Markdown lint
 
 on: [push]
 
@@ -54,90 +38,47 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: 'restqa-404-links'
-      uses: restqa/404-links@v1.0.1
+      uses: restqa/404-links@v2.0.0
 ```
 
-or if you want to pass arguments
+## Customize the linting
 
-```
-name: 404 links
+In order to customize the linter, you will need to create a `.404-links.yml` configuration file at the root level of your project.
+Then you can add the following options into the file:
 
-on: [push]
-
-jobs:
-  check-links:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: 'restqa-404-links'
-      uses: restqa/404-links@v1.0.1
-      with:
-        path: 'docs'
-        ignore: 'http://google.com'
+```yaml
+folder: docs/ # The folder that required to be parsed
+ignore: 
+  urls: # Array of url to ignore
+    - https://github.com 
+    - https://broken/* # wildcard allows
+  files: # Array of markdown file the shouldn't parse
+    - ./test.md # Relative path from the folder shared above
 ```
 
-## Gitlab CI
+### Do you know RestQA ? 
 
-If you want to use the script on gitlabCI:
+RestQA is an open automation framework based on Gherkin.
+A few step and your Test automation framework is setup. No dependency the framework is ready to be plug to all your project components
+[Give a try](https://github.com/restqa/restqa) 🚀
 
-1. Create a new file in your repository : `.gitlab-ci.yml`
-2. Copy paste the informations in your `.gitlab-ci.yml`:
+### References
 
-```
-stages:
-  - validator
+* [RestQA](https://www.restqa.io)
+* [RestQA Organization](https://github.com/restqa)
 
-404-links:
-  stage: validator
-  image:
-    name: 'restqa/404-links:v1.0.1'
-  script:
-    - '404-links .'
-#   - '404-links ./docs "https://google.com"' # if you want to add arguments
-```
+### Keywords
 
-## Api (http server version)
+* test automation
+* Gherkin
+* Cucumber
+* End to End
+* E2E
+* Quality assurance
+* QA
+* Continuous integration
+* RestQa
 
-A server version exposing a http rest API is also available.
-
-> The http server version only works with opensource repository url
-
-To start it you can run the command:
-
-```
-$ npm run serve
-```
-
-The default port is `8080`
-
-If you want to use docker run :
-
-```
-$ docker run -e PORT=8000 restqa/404-links npm run serve
-```
-
-Then the api `POST /repo` is exposes with the JSON request body :
-```
-{
-  "repository": "https://github.com/sindresorhus/awesome-nodejs",
-  "ignore": ["https://github.com/isomorphic-git/isomorphic-git"]
-}
-```
-
-example: 
-
-```
-curl --request POST \
-  --url http://localhost:8000/repo \
-  --header 'content-type: application/json' \
-  --data '{
-	  "repository": "https://github.com/sindresorhus/awesome-nodejs",
-	  "ignore": ["https://github.com/isomorphic-git/isomorphic-git"]
-  }'
-```
-
-The response body will just share an array of broken links.
-If there is no broken links the array will be empty.
 
 ## License
 
