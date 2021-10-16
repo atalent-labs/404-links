@@ -8,6 +8,7 @@ let options = {
   configFile: path.resolve(process.cwd(), '.404-links.yml'),
   log: console.log,
   folder: process.cwd(),
+  delay: {},
   ignore: {
     urls: [],
     files: []
