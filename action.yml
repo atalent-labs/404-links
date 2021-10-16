@@ -6,4 +6,4 @@ branding:
 description: "It is a part of quality assurance to check that your markdown files doesn't contains broken links"
 runs:
   using: 'node12'
-  image: '404-links.js'
+  main: '404-links.js'
