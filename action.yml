@@ -1,9 +1,9 @@
 name: '404 Links'
-author: 'Olivier Rodomond - RestQa'
+author: 'Olivier Rodomond - RestQA'
 branding:
   icon: 'link-2'
   color: 'green'
 description: "It is a part of quality assurance to check that your markdown files doesn't contains broken links"
 runs:
-  using: 'node12'
-  main: '404-links.js'
+  using: 'docker'
+  image: 'Dockerfile'

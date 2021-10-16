@@ -1,5 +1,0 @@
-import { MockedRequest, RequestHandler } from '../../handlers/RequestHandler';
-declare type UnhandledRequestCallback = (request: MockedRequest) => void;
-export declare type UnhandledRequestStrategy = 'bypass' | 'warn' | 'error' | UnhandledRequestCallback;
-export declare function onUnhandledRequest(request: MockedRequest, handlers: RequestHandler[], strategy?: UnhandledRequestStrategy): void;
-export {};

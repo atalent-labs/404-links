@@ -1,1 +1,0 @@
-export declare const setupServer: (...requestHandlers: import("..").RequestHandler<Record<string, any>, import("..").MockedRequest<import("..").DefaultRequestBody>, any, import("..").MockedRequest<import("..").DefaultRequestBody>>[]) => import("../node").SetupServerApi;

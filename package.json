@@ -2,8 +2,9 @@
     "name": "@restqa/404-links",
     "version": "2.0.0",
     "description": "A simple link checker, no more broken link in your project documentation",
-    "main": "src/index.js",
+    "main": "404-links.js",
     "scripts": {
+        "start": "node 404-links.js",
         "test": "jest",
         "lint": "elint",
         "lint:fix": "eslint --fix",
