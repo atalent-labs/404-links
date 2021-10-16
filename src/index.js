@@ -3,6 +3,7 @@ const glob = require("glob");
 const got = require('got');
 const path = require('path');
 const { Readable } = require('stream');
+const { URL } = require('url');
 
 /**
  * Instanciate 404-links
@@ -11,6 +12,7 @@ const { Readable } = require('stream');
  * @param {string} (optional) options.folder - Define the folder where the markdown files are located
  * @param {array<string>} (optional) options.ignore.urls - Ignore a list of urls
  * @param {array<string>} (optional) options.ignore.files - List of file that we do not want to parse
+ * @param {Object} (optional) options.delay - perform a delay on the matching host
  * @return {Readable}
  *
  * @example
@@ -24,6 +26,9 @@ const { Readable } = require('stream');
  *     ],
  *     files: [
  *     ]
+ *   },
+ *   delay: {
+ *     'https://github.com': 500
  *   }
  * }
  *
@@ -45,6 +50,7 @@ class Stream404 extends Readable {
       options.ignore.files = options.ignore.files.map(file => {
         return path.resolve(options.folder, file)
       })
+      options.delay = options.delay || {}
 
       this.options = options
       this._result = []
@@ -87,7 +93,7 @@ class Stream404 extends Readable {
     }
 
     _read () {
-     null
+      null
     }
 
     async *fetchStatus (urls, ignoreUrls = []){
@@ -104,7 +110,12 @@ class Stream404 extends Readable {
             timeout: 5000
           }
           try {
-          const { statusCode, url } = await got(_url, options)
+            _url = new URL(_url)
+            const delay = this.options.delay[_url.origin]
+            if (delay) {
+              await this.timeout(delay)
+            }
+            const { statusCode, url } = await got(_url, options)
             yield {
               url,
               status: statusCode,
@@ -133,6 +144,10 @@ class Stream404 extends Readable {
         }
       })
       return result
+    }
+
+    timeout(ms) {
+          return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
 

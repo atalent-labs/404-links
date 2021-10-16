@@ -54,6 +54,8 @@ ignore:
     - https://broken/* # wildcard allows
   files: # Array of markdown file the shouldn't parse
     - ./test.md # Relative path from the folder shared above
+delay:
+  'https://gitlab.com': 500 # Perform a pause of 500ms at each call matching the url
 ```
 
 ### Do you know RestQA ? 
