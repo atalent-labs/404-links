@@ -57,9 +57,8 @@ class Stream404 extends Readable {
         })
         .reduce((all, item) => {
           const fileContent = fs.readFileSync(item, 'utf-8')
-          let match = fileContent
-            .match(/\(((https|http){1}.*?)\)/gm)
-            .map(url => url.replace('(', '').replace(')', ''))
+          let match = fileContent.match(/\(((https|http){1}.*?)\)/gm)
+          match = (match || []).map(url => url.replace('(', '').replace(')', ''))
           return all.concat(match)
         }, [])
 

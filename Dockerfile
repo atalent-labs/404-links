@@ -24,5 +24,5 @@ COPY --from=builder node_modules /restqa/node_modules
 
 WORKDIR /restqa
 
-ENTRYPOINT ["/usr/local/bin/npm", "start"]
+ENTRYPOINT ["/usr/local/bin/node", "/restqa/404-links.js"]
 
