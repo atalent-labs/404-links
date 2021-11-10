@@ -7,8 +7,6 @@ LABEL description="It is a part of quality assurance to check that your markdown
 LABEL repository="https://github.com/restqa/404-links"
 LABEL url="https://restqa.io/404-links"
 
-RUN apk --no-cache add python make g++
-
 COPY package*.json ./
 
 RUN npm install --production
