@@ -17,7 +17,7 @@ This Github action will support you to validate all the links includes in your d
 
 ## Versions
 
-* [2.0.0](https://github.com/restqa/404-links) (current version)
+* [2.2.0](https://github.com/restqa/404-links) (current version)
 * [1.0.1](https://github.com/restqa/404-links/tree/1.0.1)
 
 ## Github Action
@@ -38,7 +38,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: 'restqa-404-links'
-      uses: restqa/404-links@v2.1.0
+      uses: restqa/404-links@v2.2.0
 ```
 
 ## Customize the linting
