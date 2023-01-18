@@ -17,7 +17,7 @@ let options = {
 
 
 options.log(`\n`)
-options.log(`😁  I'm so trilled to be here an support you on this task.`)
+options.log(`😁  I'm so thrilled to be here an support you on this task.`)
 options.log(`Let's take a look at the different links from your markdown files real quick!`)
 
 if (true === fs.existsSync(options.configFile)) {
