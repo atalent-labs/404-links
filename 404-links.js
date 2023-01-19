@@ -1,4 +1,5 @@
 const $404 = require('./src')
+const pullRequest = require('./src/pull-request')
 const path = require('path')
 const fs = require('fs')
 const YAML = require('yaml')
@@ -40,7 +41,7 @@ stream
      const { status, passed, url} = JSON.parse(chunk.toString())
      options.log(`> ${passed ? '✅':'❌'} - [${status}] - ${url}`)
   })
-  .on('end', function() {
+  .on('end', async function() {
     options.log('=====================================================')
     const errors = this.errors
     if (this.errors.length) {
@@ -52,6 +53,8 @@ stream
       options.log('> All the links are reachable 🥳')
     }
     options.log(`\nIf you have any issue do not hesitate to open an issue on ${chalk.green('https://github.com/restqa/404-links')}`)
+
+    await pullRequest(this.errors)
 
     process.exit(errors.length ? 1 : 0)
   })
