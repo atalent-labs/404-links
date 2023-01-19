@@ -9,6 +9,7 @@ const { URL } = require('url');
  * Instanciate 404-links
  *
  * @param {Object} options
+ * @param {boolean} (optional) options.httpsOnly - Enforce https links
  * @param {string} (optional) options.folder - Define the folder where the markdown files are located
  * @param {array<string>} (optional) options.ignore.urls - Ignore a list of urls
  * @param {array<string>} (optional) options.ignore.files - List of file that we do not want to parse
@@ -60,22 +61,35 @@ class Stream404 extends Readable {
 
       // find the content of the options folder
       const fileList = glob.sync(`${options.folder}/**/*.+(md|mdx)`)
-      let urls = fileList
+      let list = fileList
         .filter((filename) => {
           return false === options.ignore.files.includes(filename)
         })
-        .reduce((all, item) => {
-          const fileContent = fs.readFileSync(item, 'utf-8')
-          let match = fileContent.match(URL_REGEXP)
-          match = (match || []).map(url => url.replace('(', '').replace(')', ''))
-          match.reduce((mapping, url) => {
-            mapping[(new URL(url)).href] = item
-            return mapping
-          }, this._mapping)
-          return all.concat(match)
+        .reduce((all, file) => {
+          const fileContent = fs.readFileSync(file, 'utf-8').split('\n')
+          const lines = fileContent.map((line, index) => {
+            let match = line.match(URL_REGEXP)
+            match = (match || []).map(url => url.replace('(', '').replace(')', ''))
+            return match.map(url => {
+              const item = {
+                file: file.replace(this.options.folder + path.sep, ''),
+                line: index + 1
+              }
+              try {
+                item.url = new URL(url)
+              } catch (e) {
+                item.url = url
+                item.status = e.code
+              }
+              return item
+            })
+          })
+          .flat()
+          return all.concat(lines)
         }, [])
+        .flat()
 
-      this.urls = [...new Set(urls)];
+      this.urls = list;
 
       (async () => {
         try {
@@ -103,63 +117,66 @@ class Stream404 extends Readable {
       null
     }
 
-    getFile (url) {
-      const u  = new URL(url)
-      return this._mapping[u.href].replace(this.options.folder + path.sep, '')
+    format(item, status) {
+      const url = item.url.href || item.url
+      let passed = false
+      if (status === 'IGNORED' || String(status)[0] === '2') {
+        passed = true
+      }
+
+      return {
+        ...item,
+        url,
+        status,
+        passed
+      }
+    }
+
+    alreadyChecked(url) {
+      return this.result.some(item => {
+        return item.url === url.href
+      })
     }
 
     async *fetchStatus (urls, ignoreUrls = []){
-      for (let _url of urls) {
-        const urlInstance = new URL(_url)
-        if (this.shouldWeIgnore(_url, ignoreUrls)) {
-          yield {
-            url: _url,
-            status: 'ignored',
-            passed: true
-          }
-        } else if (this.options.httpsOnly === true && urlInstance.protocol === 'http:' ) {
-          yield {
-            url: urlInstance.href,
-            status: 'SHOULD_BE_HTTPS',
-            passed: false,
-            file: this.getFile(urlInstance.href)
-          }
+      for (let item of urls) {
+        if (true === this.alreadyChecked(item.url)) {
+          continue
+        }
+        if (item.status) {
+          yield this.format(item, item.status)
+        } else if (this.shouldWeIgnore(item, ignoreUrls)) {
+          yield this.format(item, 'IGNORED')
+        } else if (this.options.httpsOnly === true && item.url.protocol === 'http:' ) {
+          yield this.format(item, 'SHOULD_BE_HTTPS')
         } else {
           const options = {
             throwHttpErrors: false,
             timeout: 5000
           }
           try {
-            const delay = this.options.delay[_url.origin]
+            const delay = this.options.delay[item.url.origin]
             if (delay) {
               await this.timeout(delay)
             }
-            const { statusCode, url } = await got(_url, options)
-            yield {
-              url,
-              status: statusCode,
-              passed: String(statusCode)[0] === '2',
-              file: this.getFile(url)
-            }
+            const { statusCode } = await got(item.url, options)
+            yield this.format(item, statusCode)
           } catch (e) {
-            yield {
-              url: _url.href,
-              status: e.code,
-              passed: false,
-              file: this.getFile(_url)
-            }
+            yield this.format(item, e.code)
           }
         }
       }
     }
     
-    shouldWeIgnore(url, list) {
+    shouldWeIgnore(item, list) {
+      const url = item.url
       const result = list.some(ignore => {
-        const match = ignore.split('/*')
+        ignore = new URL(ignore)
+        const match = ignore.href.split('*')
         if (match.length === 1) {
-          return match[0] === url
+          return ignore.href === url.href
         } else if(match.length === 2) {
-          return url.startsWith(match[0]) || match[0] === url
+          return url.href.startsWith(match[0]) || match[0] === url.href
         } else {
           return false
         }
@@ -168,7 +185,7 @@ class Stream404 extends Readable {
     }
 
     timeout(ms) {
-          return new Promise(resolve => setTimeout(resolve, ms));
+      return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
 

@@ -34,10 +34,6 @@ options.ignore.urls && options.log(`> Url to ignore: ${options.ignore.urls.lengt
 options.ignore.files && options.log(`> File to ignore: ${options.ignore.files.length}`)
 options.log('=====================================================')
 
-
-options.ignore.urls.push('https://')
-options.ignore.urls.push('http://')
-
 const stream = new $404(options)
 stream
   .on('data', (chunk) => {
@@ -50,12 +46,13 @@ stream
     if (this.errors.length) {
       options.log(`> ${this.errors.length} Errors:`)
       errors.forEach(err => {
-        options.log(`   * ${chalk.red(err.status)} - ${chalk.underline(err.url)} in the file ${chalk.yellow(err.file)}`)
+        options.log(`   * ${chalk.red(err.status)} - ${chalk.underline(err.url)} in the file ${chalk.yellow(err.file + ':' + err.line)}`)
       })
     } else {
       options.log('> All the links are reachable 🥳')
     }
-    options.log(`If you have any issue do not hesitate to open an issue on ${chalk.green('https://github.com/restqa/404-links')}`)
+    options.log(`\nIf you have any issue do not hesitate to open an issue on ${chalk.green('https://github.com/restqa/404-links')}`)
+
     process.exit(errors.length ? 1 : 0)
   })
 
