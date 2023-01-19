@@ -48,6 +48,7 @@ Then you can add the following options into the file:
 
 ```yaml
 folder: docs/ # The folder that required to be parsed
+httpsOnly: true # If you want enforce only HTTPS links
 ignore: 
   urls: # Array of url to ignore
     - https://github.com 
@@ -67,7 +68,6 @@ A few step and your Test automation framework is setup. No dependency the framew
 ### References
 
 * [RestQA](https://www.restqa.io)
-* [RestQA Organization](https://github.com/restqa)
 
 ### Keywords
 
