@@ -33,6 +33,23 @@ test('Get the sucessful result of the remote calls', (done) => {
       .on('error', done)
 })
 
+test('Get the right url when the url finishes with a ")"', (done) => {
+    const options = {
+      folder: path.resolve(__dirname, 'fixtures/remote-url-contain-parenthese')
+    }
+    const stream = new NotFoundLinks(options)
+    stream
+      .on('data', (chunk) => {
+        expect(JSON.parse(chunk.toString())).toEqual({
+            url: 'https://en.wikipedia.org/wiki/Container_(virtualization)',
+            status: 200,
+            passed: true
+        })
+      })
+      .on('end', done)
+      .on('error', done)
+})
+
 test('Get 2 sucessful result of the remote calls (status code 200/201)', (done) => {
     const options = {
       folder: path.resolve(__dirname, 'fixtures/remote-success-case-2-links'),
