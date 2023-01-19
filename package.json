@@ -6,8 +6,7 @@
     "scripts": {
         "start": "node 404-links.js",
         "test": "jest",
-        "lint": "elint",
-        "lint:fix": "eslint --fix",
+        "lint": "eslint --fix",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage"
     },

@@ -35,8 +35,10 @@ const { URL } = require('url');
  * const ReadableStream = new NotFoundLinks(options)
  */
 
+const URL_REGEXP = /\(((https|http){1}.*?)\)?\)/gm
 
 class Stream404 extends Readable {
+
     constructor(options) {
       super();
 
@@ -63,7 +65,7 @@ class Stream404 extends Readable {
         })
         .reduce((all, item) => {
           const fileContent = fs.readFileSync(item, 'utf-8')
-          let match = fileContent.match(/\(((https|http){1}.*?)\)/gm)
+          let match = fileContent.match(URL_REGEXP)
           match = (match || []).map(url => url.replace('(', '').replace(')', ''))
           return all.concat(match)
         }, [])

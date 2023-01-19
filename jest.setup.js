@@ -8,7 +8,8 @@ const status = {
     'https://broken.com/test': 404,
     'https://broken.com': 403,
     'https://gittlab.com': 500,
-    'https://ggithub.com': 401
+    'https://ggithub.com': 401,
+    'https://en.wikipedia.org/wiki/Container_\\(virtualization\\)': 200
 }
 
 const endpoints = Object.entries(status)
