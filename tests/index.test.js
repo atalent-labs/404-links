@@ -405,62 +405,36 @@ test('Ignore urls', () => {
   })
 })
 
-test('Ignore urls (using wildcards)', () => {
+test('https only options enable', () => {
   return new Promise((resolve, reject) => {
     const options = {
-      folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
-      ignore: {
-        urls: [
-          'https://broken.com/*'
-        ]
-      }
+      folder: path.resolve(__dirname, 'fixtures/remote-url-http'),
+      httpsOnly: true
     }
     const stream = new NotFoundLinks(options)
     .on('data', () => {})
     .on('end', () => {
       try {
           const { result, errors } = stream
-          expect(result.length).toEqual(6)
+          expect(result.length).toEqual(2)
           expect(result[0]).toEqual({
-              url: 'https://broken.com/test',
-              status: 'ignored',
-              passed: true
+              url: 'http://restqa.io/',
+              status: 'SHOULD_BE_HTTPS',
+              passed: false,
+              file: 'file4.md'
           })
           expect(result[1]).toEqual({
-              url: 'https://broken.com',
-              status: 'ignored',
-              passed: true
-          })
-          expect(result[2]).toEqual({
-              url: 'https://ggithub.com/',
-              status: 401,
-              passed: false,
-              file: 'file-other-extension.mdx'
-          })
-          expect(result[3]).toEqual({
-              url: 'https://bitbucket.com/',
-              status: 204,
-              passed: true,
-              file: 'file-other-extension.mdx'
-          })
-          expect(result[4]).toEqual({
               url: 'https://github.com/',
               status: 200,
               passed: true,
-              file: 'file-success.md'
-          })
-          expect(result[5]).toEqual({
-              url: 'https://gitlab.com/',
-              status: 201,
-              passed: true,
-              file: 'file-success.md'
+              file: 'file4.md'
           })
           expect(errors.length).toEqual(1)
           expect(errors[0]).toEqual({
-              url: 'https://ggithub.com/',
-              status: 401,
+              url: 'http://restqa.io/',
+              status: 'SHOULD_BE_HTTPS',
               passed: false,
-              file: 'file-other-extension.mdx'
+              file: 'file4.md'
           })
           resolve()
       } catch (err) {

@@ -104,16 +104,25 @@ class Stream404 extends Readable {
     }
 
     getFile (url) {
-      return this._mapping[url].replace(this.options.folder + path.sep, '')
+      const u  = new URL(url)
+      return this._mapping[u.href].replace(this.options.folder + path.sep, '')
     }
 
     async *fetchStatus (urls, ignoreUrls = []){
       for (let _url of urls) {
+        const urlInstance = new URL(_url)
         if (this.shouldWeIgnore(_url, ignoreUrls)) {
           yield {
             url: _url,
             status: 'ignored',
             passed: true
+          }
+        } else if (this.options.httpsOnly === true && urlInstance.protocol === 'http:' ) {
+          yield {
+            url: urlInstance.href,
+            status: 'SHOULD_BE_HTTPS',
+            passed: false,
+            file: this.getFile(urlInstance.href)
           }
         } else {
           const options = {
@@ -121,7 +130,6 @@ class Stream404 extends Readable {
             timeout: 5000
           }
           try {
-            _url = new URL(_url)
             const delay = this.options.delay[_url.origin]
             if (delay) {
               await this.timeout(delay)
@@ -135,7 +143,7 @@ class Stream404 extends Readable {
             }
           } catch (e) {
             yield {
-              url: _url,
+              url: _url.href,
               status: e.code,
               passed: false,
               file: this.getFile(_url)
