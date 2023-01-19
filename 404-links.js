@@ -2,6 +2,7 @@ const $404 = require('./src')
 const path = require('path')
 const fs = require('fs')
 const YAML = require('yaml')
+const chalk = require('chalk')
 
 
 let options = {
@@ -40,7 +41,7 @@ options.ignore.urls.push('http://')
 const stream = new $404(options)
 stream
   .on('data', (chunk) => {
-     const { status, passed, url } = JSON.parse(chunk.toString())
+     const { status, passed, url} = JSON.parse(chunk.toString())
      options.log(`> ${passed ? '✅':'❌'} - [${status}] - ${url}`)
   })
   .on('end', function() {
@@ -49,12 +50,12 @@ stream
     if (this.errors.length) {
       options.log(`> ${this.errors.length} Errors:`)
       errors.forEach(err => {
-        options.log(`   * ${err.status} - ${err.url}`)
+        options.log(`   * ${chalk.red(err.status)} - ${chalk.underline(err.url)} in the file ${chalk.yellow(err.file)}`)
       })
     } else {
       options.log('> All the links are reachable 🥳')
     }
-    options.log(`If you have any issue do not hesitate to open an issue on https://github.com/restqa/404-links`)
+    options.log(`If you have any issue do not hesitate to open an issue on ${chalk.green('https://github.com/restqa/404-links')}`)
     process.exit(errors.length ? 1 : 0)
   })
 
