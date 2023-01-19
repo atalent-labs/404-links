@@ -26,7 +26,8 @@ test('Get the sucessful result of the remote calls', (done) => {
         expect(JSON.parse(chunk.toString())).toEqual({
             url: 'https://github.com/',
             status: 200,
-            passed: true
+            passed: true,
+            file: 'file1.md'
         })
       })
       .on('end', done)
@@ -43,7 +44,8 @@ test('Get the right url when the url finishes with a ")"', (done) => {
         expect(JSON.parse(chunk.toString())).toEqual({
             url: 'https://en.wikipedia.org/wiki/Container_(virtualization)',
             status: 200,
-            passed: true
+            passed: true,
+            file: 'file4.md'
         })
       })
       .on('end', done)
@@ -63,12 +65,14 @@ test('Get 2 sucessful result of the remote calls (status code 200/201)', (done) 
           expect(result[0]).toEqual({
               url: 'https://github.com/',
               status: 200,
-              passed: true
+              passed: true,
+              file: 'file2.md'
           })
           expect(result[1]).toEqual({
               url: 'https://gitlab.com/',
               status: 201,
-              passed: true
+              passed: true,
+              file: 'file2.md'
           })
           expect(errors.length).toEqual(0)
           done()
@@ -92,12 +96,14 @@ test('Get 2 sucessful result of the remote calls (status code 200/201)', (done) 
           expect(result[0]).toEqual({
               url: 'https://github.com/',
               status: 200,
-              passed: true
+              passed: true,
+              file: 'file2.md'
           })
           expect(result[1]).toEqual({
               url: 'https://gitlab.com/',
               status: 201,
-              passed: true
+              passed: true,
+              file: 'file2.md'
           })
           expect(errors.length).toEqual(0)
           done()
@@ -122,23 +128,27 @@ test('Get 2 sucessful result and 1 broken of the remote calls (status code 200/2
           expect(result[0]).toEqual({
               url: 'https://github.com/',
               status: 200,
-              passed: true
+              passed: true,
+              file: 'file3.md'
           })
           expect(result[1]).toEqual({
               url: 'https://gitlab.com/',
               status: 201,
-              passed: true
+              passed: true,
+              file: 'file3.md'
           })
           expect(result[2]).toEqual({
               url: 'https://broken.com/test',
               status: 404,
-              passed: false
+              passed: false,
+              file: 'file3.md'
           })
           expect(errors.length).toEqual(1)
           expect(errors[0]).toEqual({
               url: 'https://broken.com/test',
               status: 404,
-              passed: false
+              passed: false,
+              file: 'file3.md'
           })
           resolve()
       } catch (err) {
@@ -163,22 +173,26 @@ test('Get only 4 broken of the remote calls (status code 404/ 500/ 403 /401)', (
           expect(result[0]).toEqual({
               url: 'https://ggithub.com/',
               status: 401,
-              passed: false
+              passed: false,
+              file: 'file4.md'
           })
           expect(result[1]).toEqual({
               url: 'https://gittlab.com/',
               status: 500,
-              passed: false
+              passed: false,
+              file: 'file4.md'
           })
           expect(result[2]).toEqual({
               url: 'https://broken.com/test',
               status: 404,
-              passed: false
+              passed: false,
+              file: 'file4.md'
           })
           expect(result[3]).toEqual({
               url: 'https://broken.com/',
               status: 403,
-              passed: false
+              passed: false,
+              file: 'file4.md'
           })
           expect(errors.length).toEqual(4)
           expect(errors).toEqual(result)
@@ -205,23 +219,27 @@ test('Duplicate - Get 2 sucessful result and 1 broken of the remote calls', () =
           expect(result[0]).toEqual({
               url: 'https://github.com/',
               status: 200,
-              passed: true
+              passed: true,
+              file: 'file3.md'
           })
           expect(result[1]).toEqual({
               url: 'https://gitlab.com/',
               status: 201,
-              passed: true
+              passed: true,
+              file: 'file3.md'
           })
           expect(result[2]).toEqual({
               url: 'https://broken.com/test',
               status: 404,
-              passed: false
+              passed: false,
+              file: 'file3.md'
           })
           expect(errors.length).toEqual(1)
           expect(errors[0]).toEqual({
               url: 'https://broken.com/test',
               status: 404,
-              passed: false
+              passed: false,
+              file: 'file3.md'
           })
           resolve()
       } catch (err) {
@@ -246,48 +264,57 @@ test('Duplicate and multiple files - Get 3 sucessful result and 3 broken of the 
           expect(result[0]).toEqual({
               url: 'https://broken.com/test',
               status: 404,
-              passed: false
+              passed: false,
+              file: 'file-error.md'
           })
           expect(result[1]).toEqual({
               url: 'https://broken.com/',
               status: 403,
-              passed: false
+              passed: false,
+              file: 'file-error.md'
           })
           expect(result[2]).toEqual({
               url: 'https://ggithub.com/',
               status: 401,
-              passed: false
+              passed: false,
+              file: 'file-other-extension.mdx'
           })
           expect(result[3]).toEqual({
               url: 'https://bitbucket.com/',
               status: 204,
-              passed: true
+              passed: true,
+              file: 'file-other-extension.mdx'
           })
           expect(result[4]).toEqual({
               url: 'https://github.com/',
               status: 200,
-              passed: true
+              passed: true,
+              file: 'file-success.md'
           })
           expect(result[5]).toEqual({
               url: 'https://gitlab.com/',
               status: 201,
-              passed: true
+              passed: true,
+              file: 'file-success.md'
           })
           expect(errors.length).toEqual(3)
           expect(errors[0]).toEqual({
               url: 'https://broken.com/test',
               status: 404,
-              passed: false
+              passed: false,
+              file: 'file-error.md'
           })
           expect(errors[1]).toEqual({
               url: 'https://broken.com/',
               status: 403,
-              passed: false
+              passed: false,
+              file: 'file-error.md'
           })
           expect(errors[2]).toEqual({
               url: 'https://ggithub.com/',
               status: 401,
-              passed: false
+              passed: false,
+              file: 'file-other-extension.mdx'
           })
           resolve()
       } catch (err) {
@@ -319,27 +346,31 @@ test('Ignore urls', () => {
           expect(result[0]).toEqual({
               url: 'https://broken.com/test',
               status: 404,
-              passed: false
+              passed: false,
+              file: 'file-error.md'
           })
           expect(result[1]).toEqual({
               url: 'https://broken.com/',
               status: 403,
-              passed: false
+              passed: false,
+              file: 'file-error.md'
           })
           expect(result[2]).toEqual({
               url: 'https://ggithub.com/',
               status: 401,
-              passed: false
+              passed: false,
+              file: 'file-other-extension.mdx'
           })
           expect(result[3]).toEqual({
               url: 'https://bitbucket.com/',
               status: 204,
-              passed: true
+              passed: true,
+              file: 'file-other-extension.mdx'
           })
           expect(result[4]).toEqual({
               url: 'https://github.com',
               status: 'ignored',
-              passed: true
+              passed: true,
           })
           expect(result[5]).toEqual({
               url: 'https://gitlab.com',
@@ -350,17 +381,20 @@ test('Ignore urls', () => {
           expect(errors[0]).toEqual({
               url: 'https://broken.com/test',
               status: 404,
-              passed: false
+              passed: false,
+              file: 'file-error.md'
           })
           expect(errors[1]).toEqual({
               url: 'https://broken.com/',
               status: 403,
-              passed: false
+              passed: false,
+              file: 'file-error.md'
           })
           expect(errors[2]).toEqual({
               url: 'https://ggithub.com/',
               status: 401,
-              passed: false
+              passed: false,
+              file: 'file-other-extension.mdx'
           })
           resolve()
       } catch (err) {
@@ -400,28 +434,33 @@ test('Ignore urls (using wildcards)', () => {
           expect(result[2]).toEqual({
               url: 'https://ggithub.com/',
               status: 401,
-              passed: false
+              passed: false,
+              file: 'file-other-extension.mdx'
           })
           expect(result[3]).toEqual({
               url: 'https://bitbucket.com/',
               status: 204,
-              passed: true
+              passed: true,
+              file: 'file-other-extension.mdx'
           })
           expect(result[4]).toEqual({
               url: 'https://github.com/',
               status: 200,
-              passed: true
+              passed: true,
+              file: 'file-success.md'
           })
           expect(result[5]).toEqual({
               url: 'https://gitlab.com/',
               status: 201,
-              passed: true
+              passed: true,
+              file: 'file-success.md'
           })
           expect(errors.length).toEqual(1)
           expect(errors[0]).toEqual({
               url: 'https://ggithub.com/',
               status: 401,
-              passed: false
+              passed: false,
+              file: 'file-other-extension.mdx'
           })
           resolve()
       } catch (err) {
@@ -451,98 +490,44 @@ test('Ignore files', () => {
           expect(result[0]).toEqual({
               url: 'https://broken.com/test',
               status: 404,
-              passed: false
+              passed: false,
+              file: 'file-error.md'
           })
           expect(result[1]).toEqual({
               url: 'https://broken.com/',
               status: 403,
-              passed: false
+              passed: false,
+              file: 'file-error.md'
           })
           expect(result[2]).toEqual({
               url: 'https://ggithub.com/',
               status: 401,
-              passed: false
+              passed: false,
+              file: 'file-other-extension.mdx'
           })
           expect(result[3]).toEqual({
               url: 'https://bitbucket.com/',
               status: 204,
-              passed: true
+              passed: true,
+              file: 'file-other-extension.mdx'
           })
           expect(errors.length).toEqual(3)
           expect(errors[0]).toEqual({
               url: 'https://broken.com/test',
               status: 404,
-              passed: false
+              passed: false,
+              file: 'file-error.md'
           })
           expect(errors[1]).toEqual({
               url: 'https://broken.com/',
               status: 403,
-              passed: false
+              passed: false,
+              file: 'file-error.md'
           })
           expect(errors[2]).toEqual({
               url: 'https://ggithub.com/',
               status: 401,
-              passed: false
-          })
-          resolve()
-      } catch (err) {
-          reject(err)
-      }
-    })
-    .on('error', reject)
-  })
-})
-
-test('Ignore files', () => {
-  return new Promise((resolve, reject) => {
-    const options = {
-      folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
-      ignore: {
-        files: [
-          './file-success.md'
-        ]
-      }
-    }
-    const stream = new NotFoundLinks(options)
-    .on('data', () => {})
-    .on('end', () => {
-      try {
-          const { result, errors } = stream
-          expect(result.length).toEqual(4)
-          expect(result[0]).toEqual({
-              url: 'https://broken.com/test',
-              status: 404,
-              passed: false
-          })
-          expect(result[1]).toEqual({
-              url: 'https://broken.com/',
-              status: 403,
-              passed: false
-          })
-          expect(result[2]).toEqual({
-              url: 'https://ggithub.com/',
-              status: 401,
-              passed: false
-          })
-          expect(result[3]).toEqual({
-              url: 'https://bitbucket.com/',
-              status: 204,
-              passed: true
-          })
-          expect(errors.length).toEqual(3)
-          expect(errors[0]).toEqual({
-              url: 'https://broken.com/test',
-              status: 404,
-              passed: false
-          })
-          expect(errors[1]).toEqual({
-              url: 'https://broken.com/',
-              status: 403,
-              passed: false
-          })
-          expect(errors[2]).toEqual({
-              url: 'https://ggithub.com/',
-              status: 401,
+              file: 'file-other-extension.mdx',
               passed: false
           })
           resolve()

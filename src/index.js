@@ -56,6 +56,7 @@ class Stream404 extends Readable {
 
       this.options = options
       this._result = []
+      this._mapping = {}
 
       // find the content of the options folder
       const fileList = glob.sync(`${options.folder}/**/*.+(md|mdx)`)
@@ -67,6 +68,10 @@ class Stream404 extends Readable {
           const fileContent = fs.readFileSync(item, 'utf-8')
           let match = fileContent.match(URL_REGEXP)
           match = (match || []).map(url => url.replace('(', '').replace(')', ''))
+          match.reduce((mapping, url) => {
+            mapping[(new URL(url)).href] = item
+            return mapping
+          }, this._mapping)
           return all.concat(match)
         }, [])
 
@@ -98,6 +103,10 @@ class Stream404 extends Readable {
       null
     }
 
+    getFile (url) {
+      return this._mapping[url].replace(this.options.folder + path.sep, '')
+    }
+
     async *fetchStatus (urls, ignoreUrls = []){
       for (let _url of urls) {
         if (this.shouldWeIgnore(_url, ignoreUrls)) {
@@ -121,13 +130,15 @@ class Stream404 extends Readable {
             yield {
               url,
               status: statusCode,
-              passed: String(statusCode)[0] === '2'
+              passed: String(statusCode)[0] === '2',
+              file: this.getFile(url)
             }
           } catch (e) {
             yield {
               url: _url,
               status: e.code,
-              passed: false
+              passed: false,
+              file: this.getFile(_url)
             }
           }
         }
