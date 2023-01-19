@@ -22,7 +22,7 @@
     },
     "dependencies": {
         "glob": "^7.1.7",
-        "got": "^11.8.2",
+        "got": "^11.8.5",
         "yaml": "^1.10.2"
     },
     "repository": {
