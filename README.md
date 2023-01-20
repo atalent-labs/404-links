@@ -1,4 +1,4 @@
-# 404-links
+# 404-links - Github Action
 
 <img src="https://user-images.githubusercontent.com/4768226/213418408-53263fc6-c416-4722-908f-3fb4f70744e8.png" width="100%" />
 
