@@ -11,6 +11,7 @@ let options = {
   log: console.log,
   folder: process.cwd(),
   delay: {},
+  pullRequestReview: true,
   ignore: {
     urls: [],
     files: []
@@ -49,12 +50,13 @@ stream
       errors.forEach(err => {
         options.log(`   * ${chalk.red(err.status)} - ${chalk.underline(err.url)} in the file ${chalk.yellow(err.file + ':' + err.line)}`)
       })
+      if (this.options.pullRequestReview) {
+        await pullRequest(this.errors)
+      }
     } else {
       options.log('> All the links are reachable 🥳')
     }
     options.log(`\nIf you have any issue do not hesitate to open an issue on ${chalk.green('https://github.com/restqa/404-links')}`)
-
-    await pullRequest(this.errors)
 
     process.exit(errors.length ? 1 : 0)
   })

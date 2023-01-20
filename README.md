@@ -2,7 +2,6 @@
 
 <img src="https://user-images.githubusercontent.com/4768226/213418408-53263fc6-c416-4722-908f-3fb4f70744e8.png" width="100%" />
 
-
 > A light link checker, no more broken link in your quality project documentation. (support only markdown)
 
 ## Table of Contents
@@ -35,6 +34,9 @@ name: Markdown lint
 
 on: [push]
 
+permissions:
+  pull-requests: write
+
 jobs:
   check-links:
     runs-on: ubuntu-latest
@@ -42,6 +44,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: 'restqa-404-links'
       uses: restqa/404-links@2.2.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Customize the linting
@@ -52,6 +56,7 @@ Then you can add the following options into the file:
 ```yaml
 folder: docs/ # The folder that required to be parsed
 httpsOnly: true # If you want enforce only HTTPS links
+pullRequestReview: true # If you want a nice review in your pull requests
 ignore: 
   urls: # Array of url to ignore
     - https://github.com 
