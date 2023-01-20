@@ -15,7 +15,7 @@ A part of a good developer experience is to ensure that the documentation is acc
 Since most of the repositories depend on different website to get additional detail.
 This Github action will support you to validate all the links includes in your documentation.
 
-**Apply the world in class link checker for your documentation **
+**Apply the world in class link checker for your documentation**
 
 ## Example
 
