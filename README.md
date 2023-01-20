@@ -2,7 +2,7 @@
 
 <img src="https://user-images.githubusercontent.com/4768226/213418408-53263fc6-c416-4722-908f-3fb4f70744e8.png" width="100%" />
 
-> A light link checker, no more broken link in your quality project documentation. (support only markdown)
+> The only Github Action that will open pull request review when a broken link has been found in one of your markdown documentation.
 
 ## Table of Contents
 
@@ -15,7 +15,11 @@ A part of a good developer experience is to ensure that the documentation is acc
 Since most of the repositories depend on different website to get additional detail.
 This Github action will support you to validate all the links includes in your documentation.
 
-**The developer experience (DX) should be a part of the Product Quality Assurance**
+**Apply the world in class link checker for your documentation **
+
+## Example
+
+![Example](https://user-images.githubusercontent.com/4768226/213660645-280a62bc-9132-4a99-9df1-3e81a647c4fe.png)
 
 ## Versions
 
@@ -33,9 +37,6 @@ If you want to use the script on github action:
 name: Markdown lint
 
 on: [push]
-
-permissions:
-  pull-requests: write
 
 jobs:
   check-links:
@@ -67,11 +68,31 @@ delay:
   'https://gitlab.com': 500 # Perform a pause of 500ms at each call matching the url
 ```
 
-### Do you know RestQA ? 
+### Options
 
-RestQA is an open automation framework based on Gherkin.
-A few step and your Test automation framework is setup. No dependency the framework is ready to be plug to all your project components
-[Give a try](https://github.com/restqa/restqa) 🚀
+| property          | required | type.          | description                                                    | Default |
+| ----------------- |  ------- | -------------- | -------------------------------------------------------------- | ------- |
+| folder            | No       | string         | The folder that need to be parsed by the github action         | .       |
+| httpsOnly         | No       | boolean        | Define all the links SHOULD be HTTPS                           | false   |
+| pullRequestReview | No       | boolean        | Activate the pull request review creation when error are found | true    |
+| ignore.urls       | No       |  array<string> | List of url to ignore                                          |         |
+| ignore.files      | No       |  array<string> | List of file to ignore during the scanning                     |         |
+| delay.            | No       | object         | Delay to apply on a domain to avoid rate limits                |         |
+
+
+## Contribution Development
+
+In order to run the code locally you can
+* Install the dependencies: `npm i`
+* Run the test `npm test`
+
+## Author
+
+- [@olivierodo](https://www.github.com/olivierodo) - 🇫🇷
+
+## License
+
+[MIT License](./LICENSE)
 
 ### References
 
@@ -88,6 +109,7 @@ A few step and your Test automation framework is setup. No dependency the framew
 * QA
 * Continuous integration
 * RestQa
+
 
 
 ## License
