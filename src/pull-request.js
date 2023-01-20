@@ -1,38 +1,71 @@
 const got = require('got')
-const fs = require('fs')
 
-module.exports = function(result=[], cb) {
+module.exports = async function(result=[]) {
   try {
     const { 
       CI = 'false',
       GITHUB_TOKEN,
-      GITHUB_ACTION_REPOSITORY,
+      GITHUB_REPOSITORY,
+      GITHUB_SHA,
       GITHUB_API_URL,
-      GITHUB_EVENT_PATH
     } = process.env
 
-    if (!CI === 'true' || !GITHUB_TOKEN || !GITHUB_EVENT_PATH || result.length === 0) return cb()
-
-    if (false === fs.existsSync(GITHUB_EVENT_PATH)) return cb()
-    const event = JSON.parse(fs.readFileSync(GITHUB_EVENT_PATH, 'utf8'))
-    const prNumber = event.pull_request.number
-    const options = {
-      method: 'POST',
-      prefixUrl: GITHUB_API_URL,
-      url: `${GITHUB_ACTION_REPOSITORY}/pulls/${prNumber}/comments`,
+    const http = got.extend({
+      prefixUrl: GITHUB_API_URL + '/repos/' + GITHUB_REPOSITORY,
       headers: {
         Authorization: `Bearer ${GITHUB_TOKEN}`
-      },
-      json: {
-        body: `
+      }
+    })
 
-        `.trim()
+    if (!CI === 'true' || !GITHUB_TOKEN || !GITHUB_SHA) return 
+
+    const pulls = await http.get('commits/' +  GITHUB_SHA + '/pulls').json()
+    const PULL_ID = (pulls.find(pull => pull.state === 'open') || {}).number
+
+    if (!PULL_ID) return
+
+    const options = {
+      url: `pulls/${PULL_ID}/reviews`,
+      json: {
+        body: getComment(result),
+        event: 'COMMENT',
+        comments: result.map(item => {
+          return {
+            line: item.line,
+            path: item.file,
+            body: getReviewComment(item)
+          }
+        })
       }
     }
-
-    got(options)
-
+    await http.post(options)
   } catch (e) {
-    cb(e)
+    console.log('Error during the creation of the review', e)
   }
+}
+
+function getComment(items) {
+  return `
+Hey, I found ${items.length} links that seems to be broken. 🐛
+Wanna take a look at it?
+  `.trim()
+}
+
+function getReviewComment(item) {
+  return `
+${getEmoji(item.status)} Oups, it's sound like this url 👆 response a status code of **${item.status}**
+  `.trim()
+}
+
+function getEmoji(status) {
+  return {
+    '400': '😩',
+    '401': '⚔️',
+    '403': '🔑',
+    '404': '😱',
+    '500': '🔥',
+    '502': '⛑️',
+    '504': '🚧',
+  }[String(status)] || '💩'
+
 }

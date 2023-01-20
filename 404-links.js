@@ -1,4 +1,5 @@
 const $404 = require('./src')
+const pullRequest = require('./src/pull-request')
 const path = require('path')
 const fs = require('fs')
 const YAML = require('yaml')
@@ -10,6 +11,7 @@ let options = {
   log: console.log,
   folder: process.cwd(),
   delay: {},
+  pullRequestReview: true,
   ignore: {
     urls: [],
     files: []
@@ -40,7 +42,7 @@ stream
      const { status, passed, url} = JSON.parse(chunk.toString())
      options.log(`> ${passed ? '✅':'❌'} - [${status}] - ${url}`)
   })
-  .on('end', function() {
+  .on('end', async function() {
     options.log('=====================================================')
     const errors = this.errors
     if (this.errors.length) {
@@ -48,6 +50,9 @@ stream
       errors.forEach(err => {
         options.log(`   * ${chalk.red(err.status)} - ${chalk.underline(err.url)} in the file ${chalk.yellow(err.file + ':' + err.line)}`)
       })
+      if (this.options.pullRequestReview) {
+        await pullRequest(this.errors)
+      }
     } else {
       options.log('> All the links are reachable 🥳')
     }
