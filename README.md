@@ -23,7 +23,8 @@ This Github action will support you to validate all the links includes in your d
 
 ## Versions
 
-* [2.2.0](https://github.com/restqa/404-links) (current version)
+* [3.0.0](https://github.com/restqa/404-links) (current version)
+* [2.2.0](https://github.com/restqa/404-links/tree/2.2.0)
 * [1.0.1](https://github.com/restqa/404-links/tree/1.0.1)
 
 ## Github Action
@@ -33,7 +34,7 @@ If you want to use the script on github action:
 1. Create a new file in your repository : `.github/workflows/markdown-lint.yml`
 2. Copy paste the informations in your `.github/workflows/markdown-lint.yml`:
 
-```
+```yaml
 name: Markdown lint
 
 on: [push]
@@ -44,7 +45,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: 'restqa-404-links'
-      uses: restqa/404-links@2.2.0
+      uses: restqa/404-links@3.0.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -109,8 +110,6 @@ In order to run the code locally you can
 * QA
 * Continuous integration
 * RestQa
-
-
 
 ## License
 
