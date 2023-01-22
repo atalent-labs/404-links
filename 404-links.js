@@ -68,7 +68,7 @@ stream
           '| # | Status | URL | File | Line |',
           '| - | -----  | --- | ---- | ---- |',
           this.errors.map((item, index) => {
-            return `| ${index + 1} | **${item.status}** | ${item.url} | [${item.file}](https://github.com/${GITHUB_REPOSITORY}/blob/${GITHUB_SHA}/${item.file}?plain=0#L${item.line}) | ${item.line}|`
+            return `| ${index + 1} | **${item.status}** | ${item.url} | [${item.file}](https://github.com/${GITHUB_REPOSITORY}/blob/${GITHUB_SHA}/${item.file}?plain=1#L${item.line}) | ${item.line}|`
           }),
           ''
         ]
