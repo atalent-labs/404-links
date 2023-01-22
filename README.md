@@ -28,7 +28,8 @@ This Github action will support you to validate all the links includes in your d
 
 ## Versions
 
-* [3.1.2](https://github.com/restqa/404-links) (current version)
+* [3.1.3](https://github.com/restqa/404-links) (current version)
+* [3.1.2](https://github.com/restqa/404-links/tree/3.1.2)
 * [3.1.1](https://github.com/restqa/404-links/tree/3.1.1)
 * [3.1.0](https://github.com/restqa/404-links/tree/3.1.0)
 * [2.2.0](https://github.com/restqa/404-links/tree/2.2.0)
@@ -53,7 +54,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: 'restqa-404-links'
-      uses: restqa/404-links@3.1.2
+      uses: restqa/404-links@3.1.3
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
