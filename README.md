@@ -19,6 +19,11 @@ This Github action will support you to validate all the links includes in your d
 
 ## Example
 
+### Summary
+
+![image](https://user-images.githubusercontent.com/4768226/213923247-14cc9d16-671f-4784-8547-fae97a357a28.png)
+
+### Creation of Pull Request Review
 ![Example](https://user-images.githubusercontent.com/4768226/213660645-280a62bc-9132-4a99-9df1-3e81a647c4fe.png)
 
 ## Versions
