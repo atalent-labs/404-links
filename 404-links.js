@@ -5,7 +5,6 @@ const fs = require('fs')
 const YAML = require('yaml')
 const chalk = require('chalk')
 
-
 let options = {
   configFile: path.resolve(process.cwd(), '.404-links.yml'),
   log: console.log,
@@ -45,16 +44,24 @@ stream
   .on('end', async function() {
     options.log('=====================================================')
     const errors = this.errors
+    let summaryContent = `🤘 All the links from your documentation are reachable. \n It's sounds like someone is maintaining an outstanding documentation 🤗`
     if (this.errors.length) {
       options.log(`> ${this.errors.length} Errors:`)
       errors.forEach(err => {
         options.log(`   * ${chalk.red(err.status)} - ${chalk.underline(err.url)} in the file ${chalk.yellow(err.file + ':' + err.line)}`)
       })
+
       if (this.options.pullRequestReview) {
         await pullRequest(this.errors)
       }
+      summaryContent = `🐛 Oups, **${this.errors.length}** links are broken in you documentation.`
+
     } else {
       options.log('> All the links are reachable 🥳')
+    }
+
+    if (process.env.GITHUB_STEP_SUMMARY) {
+      fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '\n' + summaryContent)
     }
     options.log(`\nIf you have any issue do not hesitate to open an issue on ${chalk.green('https://github.com/restqa/404-links')}`)
 
