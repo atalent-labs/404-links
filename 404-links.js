@@ -4,6 +4,7 @@ const path = require('path')
 const fs = require('fs')
 const YAML = require('yaml')
 const chalk = require('chalk')
+const versionCheck = require('./src/version-check')
 
 let options = {
   configFile: path.resolve(process.cwd(), '.404-links.yml'),
@@ -65,7 +66,7 @@ stream
     }
     options.log(`\nIf you have any issue do not hesitate to open an issue on ${chalk.green('https://github.com/restqa/404-links')}`)
 
+    await versionCheck()
+
     process.exit(errors.length ? 1 : 0)
   })
-
-  

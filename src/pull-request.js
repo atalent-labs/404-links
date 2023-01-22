@@ -10,6 +10,8 @@ module.exports = async function(result=[]) {
       GITHUB_API_URL,
     } = process.env
 
+    if (!GITHUB_API_URL || !GITHUB_REPOSITORY) return
+
     const http = got.extend({
       prefixUrl: GITHUB_API_URL + '/repos/' + GITHUB_REPOSITORY,
       headers: {
