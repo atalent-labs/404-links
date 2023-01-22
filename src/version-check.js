@@ -2,16 +2,19 @@ const got = require('got')
 const fs = require('fs')
 
 module.exports = async function () {
+
+  const {
+    GITHUB_STEP_SUMMARY,
+    GITHUB_API_URL, // 'https://api.github.com'
+    GITHUB_ACTION_REPOSITORY, // 'restqa/404-links'
+    GITHUB_WORKFLOW_REF, // 'olivierodo/issue-test/.github/workflows/markdown-lint.yml@refs/heads/olivierodo-patch-1'
+    GITHUB_ACTION_REF, // 'pull-request-review'
+    GITHUB_REPOSITORY, // 'olivierodo/issue-test'
+    GITHUB_SERVER_URL, // 'https://github.com'
+    DEBUG
+  } = process.env
+
   try {
-    const {
-      GITHUB_STEP_SUMMARY,
-      GITHUB_API_URL, // 'https://api.github.com'
-      GITHUB_ACTION_REPOSITORY, // 'restqa/404-links'
-      GITHUB_WORKFLOW_REF, // 'olivierodo/issue-test/.github/workflows/markdown-lint.yml@refs/heads/olivierodo-patch-1'
-      GITHUB_ACTION_REF, // 'pull-request-review'
-      GITHUB_REPOSITORY, // 'olivierodo/issue-test'
-      GITHUB_SERVER_URL, // 'https://github.com'
-    } = process.env
 
     if (!GITHUB_API_URL || !GITHUB_ACTION_REPOSITORY) return
   
