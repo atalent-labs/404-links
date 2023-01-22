@@ -44,8 +44,8 @@ stream
   })
   .on('end', async function() {
     options.log('=====================================================')
+    let summaryContent
     const errors = this.errors
-    let summaryContent = `🤘 All the links from your documentation are reachable. \n It's sounds like someone is maintaining an outstanding documentation 🤗`
     if (this.errors.length) {
       options.log(`> ${this.errors.length} Errors:`)
       errors.forEach(err => {
@@ -55,15 +55,32 @@ stream
       if (this.options.pullRequestReview) {
         await pullRequest(this.errors)
       }
-      summaryContent = `🐛 Oups, **${this.errors.length}** links are broken in you documentation.`
 
+      const {
+        GITHUB_SHA,
+        GITHUB_REPOSITORY
+      } = process.env
+
+      if (GITHUB_REPOSITORY && GITHUB_SHA) {
+        summaryContent = [
+          `🐛 Oups, **${this.errors.length}** links are broken in you documentation.`,
+          '',
+          this.errors.map((item, index) => {
+            return `${index + 1}. ${item.url} = **${item.status}** at [${item.file}](https://github.com/${GITHUB_REPOSITORY}/blob/${GITHUB_SHA}/${item.file}?plain=1#L${item.line}):${item.line}`
+          })
+        ]
+        .flat()
+        .join('\n')
+      }
     } else {
+      summaryContent = `🤘 All the links from your documentation are reachable. \n It's sounds like someone is maintaining an outstanding documentation 🤗`
       options.log('> All the links are reachable 🥳')
     }
 
-    if (process.env.GITHUB_STEP_SUMMARY) {
+    if (summaryContent && process.env.GITHUB_STEP_SUMMARY) {
       fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '\n' + summaryContent)
     }
+
     options.log(`\nIf you have any issue do not hesitate to open an issue on ${chalk.green('https://github.com/restqa/404-links')}`)
 
     await versionCheck()
