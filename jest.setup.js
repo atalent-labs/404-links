@@ -9,6 +9,8 @@ const status = {
     'https://broken.com': 403,
     'https://gittlab.com': 500,
     'https://ggithub.com': 401,
+    'http://restqa.io': 200,
+    'http://restqa.io/logo.png': 200,
     'https://en.wikipedia.org/wiki/Container_\\(virtualization\\)': 200
 }
 

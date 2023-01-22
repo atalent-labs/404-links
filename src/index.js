@@ -71,6 +71,9 @@ class Stream404 extends Readable {
             let match = line.match(URL_REGEXP)
             match = (match || []).map(url => url.replace('(', '').replace(')', ''))
             return match.map(url => {
+              if (url.includes(')') && !url.includes('(')) {
+                url = url.replace(')', '')
+              }
               const item = {
                 file: file.replace(this.options.folder + path.sep, ''),
                 line: index + 1
