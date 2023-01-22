@@ -63,17 +63,20 @@ stream
 
       if (GITHUB_REPOSITORY && GITHUB_SHA) {
         summaryContent = [
-          `🐛 Oups, **${this.errors.length}** links are broken in you documentation.`,
+          `🐛 Oups, **${this.errors.length}** links are broken in you documentation:`,
           '',
+          '| # | Status | URL | File | Line |',
+          '| - | -----  | --- | ---- | ---- |',
           this.errors.map((item, index) => {
-            return `${index + 1}. ${item.url} = **${item.status}** at [${item.file}](https://github.com/${GITHUB_REPOSITORY}/blob/${GITHUB_SHA}/${item.file}?plain=1#L${item.line}):${item.line}`
-          })
+            return `| ${index + 1} | **${item.status}** | ${item.url} | [${item.file}](https://github.com/${GITHUB_REPOSITORY}/blob/${GITHUB_SHA}/${item.file}?plain=0#L${item.line}) | ${item.line}|`
+          }),
+          ''
         ]
         .flat()
         .join('\n')
       }
     } else {
-      summaryContent = `🤘 All the links from your documentation are reachable. \n It's sounds like someone is maintaining an outstanding documentation 🤗`
+      summaryContent = `🤘 All the ${this.result.length} links from your documentation are reachable. \n It's sounds like someone is maintaining an outstanding documentation 🤗`
       options.log('> All the links are reachable 🥳')
     }
 

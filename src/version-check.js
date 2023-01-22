@@ -32,6 +32,7 @@ module.exports = async function () {
   
     const repoURL = `${GITHUB_SERVER_URL}/${GITHUB_ACTION_REPOSITORY}`
     const summaryContent = [
+      '',
       '---',
       `Hey it sound like you are running an older version of the Github action: [${GITHUB_ACTION_REPOSITORY}](${repoURL}) 😢`,
       '',
