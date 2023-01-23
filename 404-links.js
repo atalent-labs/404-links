@@ -82,9 +82,10 @@ stream
 
     if (summaryContent && process.env.GITHUB_STEP_SUMMARY) {
       fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '\n' + summaryContent)
+      options.log(`\n Access to the summary page: ${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`)
     }
 
-    options.log(`\nIf you have any issue do not hesitate to open an issue on ${chalk.green('https://github.com/restqa/404-links')}`)
+    options.log(`\nIf you find any issue do not hesitate to open an issue on ${chalk.green('https://github.com/atalent-labs/404-links')}`)
 
     await versionCheck()
 
