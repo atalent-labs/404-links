@@ -654,10 +654,11 @@ test('Ignore files', () => {
 test('Ignore urls (using wildcards)', () => {
   return new Promise((resolve, reject) => {
     const options = {
-      folder: path.resolve(__dirname, 'fixtures/remote-multiple-files'),
+      folder: path.resolve(__dirname, 'fixtures/remote-multiple-files-ignore'),
       ignore: {
         urls: [
-          'https://broken.com/*'
+          'https://broken.com/*',
+          'https://try-out.com/test/*'
         ]
       }
     }
@@ -666,7 +667,7 @@ test('Ignore urls (using wildcards)', () => {
     .on('end', () => {
       try {
           const { result, errors } = stream
-          expect(result.length).toEqual(6)
+          expect(result.length).toEqual(7)
           expect(result[0]).toEqual({
               url: 'https://broken.com/test',
               status: 'IGNORED',
@@ -682,27 +683,34 @@ test('Ignore urls (using wildcards)', () => {
               line: 8
           })
           expect(result[2]).toEqual({
+              url: 'https://try-out.com/test',
+              status: 'IGNORED',
+              passed: true,
+              file: 'file-error.md',
+              line: 9
+          })
+          expect(result[3]).toEqual({
               url: 'https://ggithub.com/',
               status: 401,
               passed: false,
               file: 'file-other-extension.mdx',
               line: 7
           })
-          expect(result[3]).toEqual({
+          expect(result[4]).toEqual({
               url: 'https://bitbucket.com/',
               status: 204,
               passed: true,
               file: 'file-other-extension.mdx',
               line: 8
           })
-          expect(result[4]).toEqual({
+          expect(result[5]).toEqual({
               url: 'https://github.com/',
               status: 200,
               passed: true,
               file: 'file-success.md',
               line: 7
           })
-          expect(result[5]).toEqual({
+          expect(result[6]).toEqual({
               url: 'https://gitlab.com/',
               status: 201,
               passed: true,

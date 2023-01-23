@@ -179,7 +179,7 @@ class Stream404 extends Readable {
         if (match.length === 1) {
           return ignore.href === url.href
         } else if(match.length === 2) {
-          return url.href.startsWith(match[0]) || match[0] === url.href
+          return url.href.startsWith(match[0]) || match[0] === url.href || match[0] === url.href + '/'
         } else {
           return false
         }
