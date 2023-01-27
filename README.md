@@ -32,13 +32,14 @@ This Github action will support you to validate all the links includes in your d
 
 ## Versions
 
-* [3.1.3](https://github.com/atalent-labs/404-links) (current version)
-* [3.1.2](https://github.com/atalent-labs/404-links/tree/3.1.2)
-* [3.1.1](https://github.com/atalent-labs/404-links/tree/3.1.1)
-* [3.1.0](https://github.com/atalent-labs/404-links/tree/3.1.0)
-* [2.2.0](https://github.com/atalent-labs/404-links/tree/2.2.0)
-* [2.2.0](https://github.com/atalent-labs/404-links/tree/2.2.0)
-* [1.0.1](https://github.com/atalent-labs/404-links/tree/1.0.1)
+* [3.1.4](https://github.com/restqa/404-links) (current version)
+* [3.1.3](https://github.com/restqa/404-links/tree/3.1.3)
+* [3.1.2](https://github.com/restqa/404-links/tree/3.1.2)
+* [3.1.1](https://github.com/restqa/404-links/tree/3.1.1)
+* [3.1.0](https://github.com/restqa/404-links/tree/3.1.0)
+* [2.2.0](https://github.com/restqa/404-links/tree/2.2.0)
+* [2.2.0](https://github.com/restqa/404-links/tree/2.2.0)
+* [1.0.1](https://github.com/restqa/404-links/tree/1.0.1)
 
 ## Github Action
 
@@ -50,15 +51,19 @@ If you want to use the script on github action:
 ```yaml
 name: Markdown lint
 
-on: [push]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
 
 jobs:
   check-links:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: 'atalent-labs-404-links'
-      uses: atalent-labs/404-links@3.1.3
+    - name: 'restqa-404-links'
+      uses: restqa/404-links@3.1.4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
