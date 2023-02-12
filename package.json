@@ -23,7 +23,7 @@
     "dependencies": {
         "chalk": "^4.1.2",
         "glob": "^7.1.7",
-        "got": "^11.8.5",
+        "got": "^12.5.3",
         "yaml": "^1.10.2"
     },
     "repository": {
