@@ -1,4 +1,4 @@
-# 404-links - Github Action
+    # 404-links - Github Action
 
 <img src="https://user-images.githubusercontent.com/4768226/213418408-53263fc6-c416-4722-908f-3fb4f70744e8.png" width="100%" />
 
@@ -50,13 +50,9 @@ If you want to use the script on github action:
 
 ```yaml
 name: Markdown lint
-
-on:
-  push:
-    branches: [ master ]
-  pull_request:
+on:push:branches: [ master ]
+pull_request:
     types: [assigned, opened, synchronize, reopened]
-
 jobs:
   check-links:
     runs-on: ubuntu-latest
