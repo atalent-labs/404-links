@@ -52,7 +52,7 @@ stream
         options.log(`   * ${chalk.red(err.status)} - ${chalk.underline(err.url)} in the file ${chalk.yellow(err.file + ':' + err.line)}`)
       })
 
-      if (this.options.pullRequestReview) {
+      if (options.pullRequestReview) {
         await pullRequest(this.errors)
       }
 
