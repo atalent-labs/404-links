@@ -63,7 +63,7 @@ stream
 
       if (GITHUB_REPOSITORY && GITHUB_SHA) {
         summaryContent = [
-          `🐛 Oups, **${this.errors.length}** links are broken in you documentation:`,
+          `🐛 Oops! We found **${this.errors.length}** broken links:`,
           '',
           '| # | Status | URL | File | Line |',
           '| - | -----  | --- | ---- | ---- |',
@@ -76,8 +76,8 @@ stream
         .join('\n')
       }
     } else {
-      summaryContent = `🤘 All the ${this.result.length} links from your documentation are reachable. \n It's sounds like someone is maintaining an outstanding documentation 🤗`
-      options.log('> All the links are reachable 🥳')
+      summaryContent = `🤘 All ${this.result.length} links from your documentation are reachable. \n Outstanding! 🤗`
+      options.log('> All links are reachable 🥳')
     }
 
     if (summaryContent && process.env.GITHUB_STEP_SUMMARY) {
