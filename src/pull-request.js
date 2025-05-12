@@ -49,13 +49,13 @@ module.exports = async function(result=[]) {
 function getComment(items) {
   return `
 Hey, I found ${items.length} links that seems to be broken. 🐛
-Wanna take a look at it?
+Wanna take a look?
   `.trim()
 }
 
 function getReviewComment(item) {
   return `
-${getEmoji(item.status)} Oups, it's sound like this url 👆 response a status code of **${item.status}**
+${getEmoji(item.status)} Oops, this url 👆 responded with a status code of **${item.status}**
   `.trim()
 }
 
