@@ -74,6 +74,8 @@ class Stream404 extends Readable {
               if (url.includes(')') && !url.includes('(')) {
                 url = url.replace(')', '')
               }
+
+              url = url.replace('\\','')
               const item = {
                 file: file.replace(this.options.folder + path.sep, ''),
                 line: index + 1

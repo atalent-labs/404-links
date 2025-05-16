@@ -11,7 +11,8 @@ const status = {
     'https://ggithub.com': 401,
     'http://restqa.io': 200,
     'http://restqa.io/logo.png': 200,
-    'https://en.wikipedia.org/wiki/Container_\\(virtualization\\)': 200
+    'https://en.wikipedia.org/wiki/Container_\\(virtualization\\)': 200,
+    'https://owasp.org/www-community/attacks/SQL_Injection': 200
 }
 
 const endpoints = Object.entries(status)

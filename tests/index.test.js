@@ -94,6 +94,53 @@ test('Get the right url when the url finishes with a ")"', (done) => {
       .on('error', done)
 })
 
+test('Get the right url when the url contains a backslash', (done) => {
+    const options = {
+      folder: path.resolve(__dirname, 'fixtures/remote-url-with-backslash')
+    }
+    const stream = new NotFoundLinks(options)
+    .on('data', () => {})
+    .on('end', () => {
+      try {
+          const { result, errors } = stream
+          expect(result.length).toEqual(4)
+          expect(result[0]).toEqual({
+              url: 'http://restqa.io/logo.png',
+              status: 200,
+              passed: true,
+              line: 7,
+              file: 'file4.md'
+          })
+          expect(result[1]).toEqual({
+              url: 'http://restqa.io/',
+              status: 200,
+              passed: true,
+              line: 7,
+              file: 'file4.md'
+          })
+          expect(result[2]).toEqual({
+              url: 'https://github.com/',
+              status: 200,
+              passed: true,
+              line: 8,
+              file: 'file4.md'
+          })
+          expect(result[3]).toEqual({
+              url: 'https://owasp.org/www-community/attacks/SQL_Injection',
+              status: 200,
+              passed: true,
+              line: 9,
+              file: 'file4.md'
+          })
+          expect(errors.length).toEqual(0)
+          done()
+      } catch (err) {
+          done(err)
+      }
+    })
+    .on('error', done)
+})
+
 test('Get 2 sucessful result of the remote calls (status code 200/201)', (done) => {
     const options = {
       folder: path.resolve(__dirname, 'fixtures/remote-success-case-2-links'),
