@@ -70,7 +70,8 @@ class Stream404 extends Readable {
           const lines = fileContent.map((line, index) => {
             let match = line.match(URL_REGEXP)
             match = (match || []).map(url => url.replace('(', '').replace(')', ''))
-            return match.map(url => {
+            return match.map($url => {
+              let url = $url
               if (url.includes(')') && !url.includes('(')) {
                 url = url.replace(')', '')
               }
@@ -78,7 +79,7 @@ class Stream404 extends Readable {
               url = url.replace('\\','')
               const item = {
                 file: file.replace(this.options.folder + path.sep, ''),
-                line: index + 1
+                line: index + 1,
               }
               try {
                 item.url = new URL(url)
@@ -86,6 +87,12 @@ class Stream404 extends Readable {
                 item.url = url
                 item.status = e.code
               }
+
+              const noCheck = (line.split($url + ')').at(1)|| '' ).trim().match(/<!--\s*no-check\s*-->/) !== null
+              if (noCheck) {
+								item.status = 'IGNORED'
+							}
+
               return item
             })
           })

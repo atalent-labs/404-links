@@ -35,6 +35,53 @@ test('Get the sucessful result of the remote calls', (done) => {
       .on('error', done)
 })
 
+test('Ignore the url that has the no-check in html comment', (done) => {
+    const options = {
+      folder: path.resolve(__dirname, 'fixtures/remote-url-ignore-with-html-tag')
+    }
+    const stream = new NotFoundLinks(options)
+    .on('data', () => {})
+    .on('end', () => {
+      try {
+          const { result, errors } = stream
+          expect(result.length).toEqual(4)
+          expect(result[0]).toEqual({
+              url: 'http://restqa.io/logo.png',
+              status: 200,
+              passed: true,
+              line: 7,
+              file: 'file4.md'
+          })
+          expect(result[1]).toEqual({
+              url: 'http://restqa.io/',
+              status: 200,
+              passed: true,
+              line: 7,
+              file: 'file4.md'
+          })
+          expect(result[2]).toEqual({
+              url: 'https://github.com/',
+              status: 200,
+              passed: true,
+              line: 8,
+              file: 'file4.md'
+          })
+          expect(result[3]).toEqual({
+              url: 'https://owasp.org/www-community/attacks/SQL_Injection',
+              status: 'IGNORED',
+              passed: true,
+              line: 9,
+              file: 'file4.md'
+          })
+          expect(errors.length).toEqual(0)
+          done()
+      } catch (err) {
+          done(err)
+      }
+    })
+    .on('error', done)
+})
+
 test('Get the right url when the url is within parentheses', (done) => {
     const options = {
       folder: path.resolve(__dirname, 'fixtures/remote-url-in-parentheses')

@@ -70,6 +70,16 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+## How to quiclkly ignore a link
+
+If you want to quickly ignore a link, you can add simply add the `<!-- no-check -->` comment right after your link.
+
+Here an example:
+
+```markdown
+[https://this-is-a-broken-link.com](https://this-is-a-broken-link.com) <!-- no-check -->
+```
+
 ## Customize the linting
 
 In order to customize the linter, you will need to create a `.404-links.yml` configuration file at the root level of your project.
