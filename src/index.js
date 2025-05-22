@@ -88,11 +88,16 @@ class Stream404 extends Readable {
                 item.status = e.code
               }
 
-              const noCheck = (line.split($url + ')').at(1)|| '' ).trim().match(/<!--\s*no-check\s*-->/) !== null
-              if (noCheck) {
-								item.status = 'IGNORED'
-							}
-
+              try {
+								const noCheck = (line.split($url + ')').at(1)|| '' ).trim().match(/<!--\s*no-check\s*-->/) !== null
+								if (noCheck) {
+									item.status = 'IGNORED'
+								}
+              } catch (e) {
+                if ('DEBUG' === process.env.LOG_LEVEL) {
+                  console.debug(e)
+                }
+              }
               return item
             })
           })
